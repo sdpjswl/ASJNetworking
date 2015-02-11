@@ -1,9 +1,9 @@
 //
 //  Networking.m
-//  AscentDemo
+//  Networking
 //
-//  Created by ABS_MAC02 on 04/02/15.
-//  Copyright (c) 2015 esense. All rights reserved.
+//  Created by Sudeep Jaiswal on 04/02/15.
+//  Copyright (c) 2015 Sudeep Jaiswal. All rights reserved.
 //
 
 #import "Networking.h"

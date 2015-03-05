@@ -11,7 +11,7 @@
 #import "AFNetworking.h"
 #import "AFNetworkActivityLogger.h"
 
-NSString *const baseServerURL = @"http://172.25.9.14:8000";
+NSString *const baseServerURL = @"http://xx.xx.xx.xx:xxxx";
 NSInteger const logMessages = 0;
 
 @interface Networking ()

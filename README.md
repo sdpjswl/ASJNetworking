@@ -7,6 +7,6 @@ Dependencies:
 - [MBProgressHUD](https://github.com/jdg/MBProgressHUD)
 
 Tips:
-- You may enable or disable networking log messages by changing the BOOL in the 'm' file
+- You may enable or disable networking log messages by changing the const in the 'm' file
 - You should set your server address before making any requests
 - A spinner will automatically be shown, then hidden as requests start and complete/fail

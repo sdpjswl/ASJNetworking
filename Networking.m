@@ -2,7 +2,7 @@
 //  Networking.m
 //  Networking
 //
-//  Created by Sudeep Jaiswal on 04/02/15.
+//  Created by sudeep on 04/02/15.
 //  Copyright (c) 2015 Sudeep Jaiswal. All rights reserved.
 //
 
@@ -11,125 +11,124 @@
 #import "AFNetworking.h"
 #import "AFNetworkActivityLogger.h"
 
-// '1' or '0' to show network responses in the console
-#define LOG_MESSAGES 0
+NSString *const baseServerURL = @"http://172.25.9.14:8000";
+NSInteger const logMessages = 0;
 
-NSString *const baseServerURL = @"http://xx.xx.xx.xx:xxxx";
+@interface Networking ()
+
++ (AFHTTPRequestOperationManager *)getRequestOperationManager;
++ (void)startRequestLogging:(BOOL)yesOrNo;
++ (void)shouldShowSpinner:(BOOL)yesOrNo onSender:(id)sender;
++ (void)showSpinnerOnView:(UIView *)view;
++ (void)hideSpinnerOnView:(UIView *)view;
+
+@end
 
 @implementation Networking
 
 
-#pragma mark - GET
+#pragma mark - Public
 
-+ (void)fireGETRequestForMethodNamed:(NSString *)name usingParameters:(NSDictionary *)params sender:(id)sender completionBlock:(void (^)(NSDictionary *dict))completionBlock failBlock:(void (^)(NSError *error))failBlock {
-    
-    // set the request up
-    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:baseServerURL]];
-    manager.responseSerializer = [AFJSONResponseSerializer serializer];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/plain"];
-    
-    // show spinner on sender VC
-    UIViewController *vc = (UIViewController *)sender;
-    [Networking showSpinnerOnView:vc.view];
-    
-    // start log messages
-    if (LOG_MESSAGES) {
-        [AFNetworkActivityLogger sharedLogger].level = AFLoggerLevelDebug;
-        [[AFNetworkActivityLogger sharedLogger] startLogging];
-    }
-    
-    // hit it!
-    [manager GET:name.lowercaseString parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        // hide the spinner
-        [Networking hideSpinnerOnView:vc.view];
-        
-        // stop log messages
-        if (LOG_MESSAGES) {
-            [[AFNetworkActivityLogger sharedLogger] stopLogging];
-        }
-        
-        // typecast the response for use
-        NSDictionary *dict = (NSDictionary *)responseObject;
-        completionBlock(dict); // calling the block with a parameter
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        
-        // hide the spinner
-        [Networking hideSpinnerOnView:vc.view];
-        
-        // stop log messages
-        if (LOG_MESSAGES) {
-            [[AFNetworkActivityLogger sharedLogger] stopLogging];
-        }
-        
-        // calling the block with a parameter
-        failBlock(error);
-    }];
++ (void)fireGETRequestForMethodNamed:(NSString *)name parameters:(NSDictionary *)params sender:(id)sender completionBlock:(void (^)(id obj, NSError *error))completionBlock {
+	
+	[Networking shouldShowSpinner:YES onSender:sender];
+	[Networking startRequestLogging:YES];
+	
+	AFHTTPRequestOperationManager *manager = [Networking getRequestOperationManager];
+	[manager GET:name parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+		
+		[Networking shouldShowSpinner:NO onSender:sender];
+		[Networking startRequestLogging:NO];
+		completionBlock(responseObject, nil);
+		
+	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+		
+		[Networking shouldShowSpinner:NO onSender:sender];
+		[Networking startRequestLogging:NO];
+		completionBlock(nil, error);
+		
+	}];
+}
+
++ (void)firePOSTRequestForMethodNamed:(NSString *)name parameters:(NSDictionary *)params images:(NSArray *)images sender:(id)sender completionBlock:(void (^)(id obj, NSError *error))completionBlock {
+	
+	[Networking shouldShowSpinner:YES onSender:sender];
+	[Networking startRequestLogging:YES];
+	
+	AFHTTPRequestOperationManager *manager = [Networking getRequestOperationManager];
+	[manager POST:name parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+		
+		if (images) {
+			[images enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+				UIImage *img = (UIImage *)obj;
+				NSData *imgData = UIImageJPEGRepresentation(img, 1.0);
+				NSString *fileName = [NSString stringWithFormat:@"image%lu", idx];
+				[formData appendPartWithFileData:imgData
+											name:@"image"
+										fileName:fileName
+										mimeType:@"image/jpeg"];
+			}];
+		}
+		
+	} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+		
+		[Networking shouldShowSpinner:NO onSender:sender];
+		[Networking startRequestLogging:NO];
+		completionBlock(responseObject, nil);
+		
+	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+		
+		[Networking shouldShowSpinner:NO onSender:sender];
+		[Networking startRequestLogging:NO];
+		completionBlock(nil, error);
+	}];
 }
 
 
-#pragma mark - POST
+#pragma mark - Private
 
-+ (void)firePOSTRequestForMethodNamed:(NSString *)name usingParameters:(NSDictionary *)params sender:(id)sender completionBlock:(void (^)(NSDictionary *dict))completionBlock failBlock:(void (^)(NSError *error))failBlock  {
-    
-    // set the request up
-    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:baseServerURL]];
-    manager.responseSerializer = [AFJSONResponseSerializer serializer];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/plain"];
-    
-    // show spinner on sender VC
-    UIViewController *vc = (UIViewController *)sender;
-    [Networking showSpinnerOnView:vc.view];
-    
-    // start log messages
-    if (LOG_MESSAGES) {
-        [AFNetworkActivityLogger sharedLogger].level = AFLoggerLevelDebug;
-        [[AFNetworkActivityLogger sharedLogger] startLogging];
-    }
-    
-    // hit it!
-    [manager POST:name parameters:params constructingBodyWithBlock:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        // hide the spinner
-        [Networking hideSpinnerOnView:vc.view];
-        
-        // stop log messages
-        if (LOG_MESSAGES) {
-            [[AFNetworkActivityLogger sharedLogger] stopLogging];
-        }
-        
-        // typecast the response for use
-        NSDictionary *dict = (NSDictionary *)responseObject;
-        completionBlock(dict); // calling the block with a parameter
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        
-        // hide the spinner
-        [Networking hideSpinnerOnView:vc.view];
-        
-        // stop log messages
-        if (LOG_MESSAGES) {
-            [[AFNetworkActivityLogger sharedLogger] stopLogging];
-        }
-        
-        failBlock(error); // calling the block with a parameter
-    }];
++ (AFHTTPRequestOperationManager *)getRequestOperationManager {
+	AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:baseServerURL]];
+	manager.responseSerializer = [AFJSONResponseSerializer serializer];
+	manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/plain"];
+	return manager;
 }
 
++ (void)startRequestLogging:(BOOL)yesOrNo {
+	
+	if (!logMessages) {
+		return;
+	}
+	
+	[AFNetworkActivityLogger sharedLogger].level = AFLoggerLevelDebug;
+	if (yesOrNo) {
+		[[AFNetworkActivityLogger sharedLogger] startLogging];
+	}
+	else {
+		[[AFNetworkActivityLogger sharedLogger] stopLogging];
+	}
+}
 
-#pragma mark - Spinner
++ (void)shouldShowSpinner:(BOOL)yesOrNo onSender:(id)sender {
+	UIViewController *vc = (UIViewController *)sender;
+	if (yesOrNo) {
+		[Networking showSpinnerOnView:vc.view];
+	}
+	else {
+		[Networking hideSpinnerOnView:vc.view];
+	}
+}
 
 + (void)showSpinnerOnView:(UIView *)view {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD showHUDAddedTo:view animated:YES];
-    });
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[MBProgressHUD showHUDAddedTo:view animated:YES];
+	});
 }
 
 + (void)hideSpinnerOnView:(UIView *)view {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD hideAllHUDsForView:view animated:YES];
-    });
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[MBProgressHUD hideAllHUDsForView:view animated:YES];
+	});
 }
 
 @end

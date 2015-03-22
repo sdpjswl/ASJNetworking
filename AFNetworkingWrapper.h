@@ -1,5 +1,5 @@
 //
-//  Networking.h
+//  AFNetworkingWrapper.h
 //  Networking
 //
 //  Created by sudeep on 04/02/15.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Networking : NSObject
+@interface AFNetworkingWrapper : NSObject
 
 /**
  *  Executes a GET request. Consider an example URL, "http://www.myAwesomeWebsite.com/login"

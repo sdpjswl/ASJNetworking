@@ -1,5 +1,5 @@
 //
-//  Networking.m
+//  AFNetworkingWrapper.m
 //  Networking
 //
 //  Created by sudeep on 04/02/15.
@@ -22,7 +22,7 @@ NSString *const baseServerURL = @"http://www.setSomethingHere.com";
  */
 NSInteger const logMessages = 0;
 
-@interface Networking ()
+@interface AFNetworkingWrapper ()
 
 + (AFHTTPRequestOperationManager *)getRequestOperationManager;
 + (void)startRequestLogging:(BOOL)yesOrNo;
@@ -32,7 +32,7 @@ NSInteger const logMessages = 0;
 
 @end
 
-@implementation Networking
+@implementation AFNetworkingWrapper
 
 
 #pragma mark - Public

@@ -18,7 +18,7 @@ a dictionary containing key-value pairs. keys will be case sensitive depending o
 if constructing a multi-part request for uploading images, pass an array of UIImages
 
 - "sender"
-always 'self'. this will get a reference to the UIViewController to show the spinner on
+almost always "self". this will get a reference to the UIViewController to show the spinner on
 
 - "completionBlock"
 server response will be received in the block
@@ -27,3 +27,4 @@ Tips:
 - You may enable or disable networking log messages by changing the const in the 'm' file
 - You should set your server address before making any requests
 - A spinner will automatically be shown, then hidden as requests start and complete/fail
+- Detailed instructions in the header file

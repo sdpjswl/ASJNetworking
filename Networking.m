@@ -11,7 +11,15 @@
 #import "AFNetworking.h"
 #import "AFNetworkActivityLogger.h"
 
-NSString *const baseServerURL = @"http://xx.xx.xx.xx:xxxx";
+/**
+ *  The URL to which requests are made. This must be set beforehand. Make this change in "Networking.m".
+ *  e.g.: "http://www.myAwesomeWebsite.com". You must NOT add a slash ('/') at the end.
+ */
+NSString *const baseServerURL = @"http://www.setSomethingHere.com";
+
+/**
+ *  Toggle this to '1' or '0' to show messages in the console
+ */
 NSInteger const logMessages = 0;
 
 @interface Networking ()
@@ -29,7 +37,10 @@ NSInteger const logMessages = 0;
 
 #pragma mark - Public
 
-+ (void)fireGETRequestForMethodNamed:(NSString *)name parameters:(NSDictionary *)params sender:(id)sender completionBlock:(void (^)(id obj, NSError *error))completionBlock {
++ (void)fireGETRequestForMethodNamed:(NSString *)name
+                          parameters:(NSDictionary *)params
+                              sender:(id)sender
+                     completionBlock:(void (^)(id obj, NSError *error))completionBlock {
 	
 	[Networking shouldShowSpinner:YES onSender:sender];
 	[Networking startRequestLogging:YES];
@@ -50,7 +61,10 @@ NSInteger const logMessages = 0;
 	}];
 }
 
-+ (void)firePOSTRequestForMethodNamed:(NSString *)name parameters:(NSDictionary *)params images:(NSArray *)images sender:(id)sender completionBlock:(void (^)(id obj, NSError *error))completionBlock {
++ (void)firePOSTRequestForMethodNamed:(NSString *)name
+                           parameters:(NSDictionary *)params
+                               images:(NSArray *)images sender:(id)sender
+                      completionBlock:(void (^)(id obj, NSError *error))completionBlock {
 	
 	[Networking shouldShowSpinner:YES onSender:sender];
 	[Networking startRequestLogging:YES];

@@ -1,10 +1,24 @@
-//
 //  ASJNetworking.m
-//  ASJNetworkingExample
 //
-//  Created by sudeep on 04/07/15.
-//  Copyright (c) 2015 Sudeep Jaiswal. All rights reserved.
+// Copyright (c) 2015 Sudeep Jaiswal
 //
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #import "ASJNetworking.h"
 
@@ -12,7 +26,6 @@
 
 @property (copy, nonatomic) NSString *baseUrl;
 @property (copy, nonatomic) NSString *requestMethod;
-@property (assign, nonatomic) ASJNetworkingRequestType requestType;
 @property (copy, nonatomic) NSDictionary *arguments;
 @property (copy, nonatomic) NSDictionary *parameters;
 @property (copy, nonatomic) NSArray *images;
@@ -43,48 +56,42 @@
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
                   requestMethod:(NSString *)requestMethod
-                    requestType:(ASJNetworkingRequestType)requestType
 {
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod requestType:requestType arguments:nil];
+  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:nil];
 }
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
                   requestMethod:(NSString *)requestMethod
-                    requestType:(ASJNetworkingRequestType)requestType
                       arguments:(NSDictionary *)arguments
 {
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod requestType:requestType arguments:arguments parameters:nil];
+  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:arguments parameters:nil];
 }
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
                   requestMethod:(NSString *)requestMethod
-                    requestType:(ASJNetworkingRequestType)requestType
                      parameters:(NSDictionary *)parameters
 {
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod requestType:requestType arguments:nil parameters:parameters];
+  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:nil parameters:parameters];
 }
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
                   requestMethod:(NSString *)requestMethod
-                    requestType:(ASJNetworkingRequestType)requestType
                       arguments:(NSDictionary *)arguments
                      parameters:(NSDictionary *)parameters
 {
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod requestType:requestType arguments:arguments parameters:parameters images:nil];
+  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:arguments parameters:parameters images:nil];
 }
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
                   requestMethod:(NSString *)requestMethod
-                    requestType:(ASJNetworkingRequestType)requestType
                      parameters:(NSDictionary *)parameters
                          images:(NSArray *)images
 {
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod requestType:requestType arguments:nil parameters:parameters images:images];
+  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:nil parameters:parameters images:images];
 }
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
                   requestMethod:(NSString *)requestMethod
-                    requestType:(ASJNetworkingRequestType)requestType
                       arguments:(NSDictionary *)arguments
                      parameters:(NSDictionary *)parameters
                          images:(NSArray *)images
@@ -93,7 +100,6 @@
   if (self) {
     _baseUrl = baseUrl;
     _requestMethod = requestMethod;
-    _requestType = requestType;
     _arguments = arguments;
     _parameters = parameters;
     _images = images;
@@ -103,35 +109,11 @@
   return self;
 }
 
-#pragma mark - Fire request
-
-- (void)fireWithCompletion:(ASJCompletionBlock)completion
-{
-  [self fireWithProgress:nil completion:completion];
-}
-
-- (void)fireWithProgress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion
-{
-  _progress = progress;
-  _callback = completion;
-  if (_requestType == ASJNetworkingRequestTypeGet)
-  {
-    [self fireGetRequest];
-  }
-  else if (_requestType == ASJNetworkingRequestTypePost)
-  {
-    [self firePostRequest];
-  }
-  else if (_requestType == ASJNetworkingRequestTypeMultipartPost)
-  {
-    [self fireMultipartPostRequest];
-  }
-}
-
 #pragma mark - Get
 
-- (void)fireGetRequest
+- (void)fireGetWithCompletion:(ASJCompletionBlock)completion
 {
+  _callback = completion;
   NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.requestUrl];
   [task resume];
 }
@@ -150,8 +132,9 @@
 
 #pragma mark - Post
 
-- (void)firePostRequest
+- (void)firePostWithCompletion:(ASJCompletionBlock)completion
 {
+  _callback = completion;
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
   request.HTTPMethod = @"POST";
   request.HTTPBody = self.httpBody;
@@ -178,8 +161,11 @@
 
 #pragma mark - Multipart post
 
-- (void)fireMultipartPostRequest
+- (void)fireMultipartPostWithProgress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion
 {
+  _progress = progress;
+  _callback = completion;
+  
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
   request.HTTPMethod = @"POST";
   request.HTTPBody = self.multipartHttpBody;

@@ -43,8 +43,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     textView.text = nil;
     progressLabel.text = nil;
   }];
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"get" requestType:ASJNetworkingRequestTypeGet];
-  [networking fireWithCompletion:^(id response, NSString *responseString, NSError *error) {
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"get"];
+  [networking fireGetWithCompletion:^(id response, NSString *responseString, NSError *error) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       textView.text = responseString;
     }];
@@ -57,8 +57,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     textView.text = nil;
     progressLabel.text = nil;
   }];
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"post" requestType:ASJNetworkingRequestTypePost];
-  [networking fireWithCompletion:^(id response, NSString *responseString, NSError *error) {
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"post"];
+  [networking firePostWithCompletion:^(id response, NSString *responseString, NSError *error) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       textView.text = responseString;
     }];
@@ -78,8 +78,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
   imageItem.filename = @"talk.jpg";
   imageItem.image = [UIImage imageNamed:@"el_capitan"];
   
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL2 requestMethod:nil requestType:ASJNetworkingRequestTypeMultipartPost arguments:nil parameters:p images:@[imageItem]];
-  [networking fireWithProgress:^(CGFloat progressPercentage)
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL2 requestMethod:nil arguments:nil parameters:p images:@[imageItem]];
+  [networking fireMultipartPostWithProgress:^(CGFloat progressPercentage)
    {
      progressLabel.text = [NSString stringWithFormat:@"Progress: %.2f%%", progressPercentage];
      

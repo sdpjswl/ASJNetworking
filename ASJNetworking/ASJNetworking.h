@@ -24,7 +24,7 @@
 @import UIKit;
 
 typedef void (^ASJCompletionBlock)(id response, NSString *responseString, NSError *error);
-typedef void (^ASJProgressBlock)(CGFloat progressPercentage);
+typedef void (^ASJProgressBlock)(CGFloat progressPc);
 
 @interface ASJNetworking : NSObject
 
@@ -32,33 +32,34 @@ typedef void (^ASJProgressBlock)(CGFloat progressPercentage);
                   requestMethod:(NSString *)requestMethod;
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                 requestMethod:(NSString *)requestMethod
-                     arguments:(NSDictionary *)arguments;
+                  requestMethod:(NSString *)requestMethod
+                      arguments:(NSDictionary *)arguments;
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
                   requestMethod:(NSString *)requestMethod
                      parameters:(NSDictionary *)parameters;
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                 requestMethod:(NSString *)requestMethod
-                     arguments:(NSDictionary *)arguments
-                    parameters:(NSDictionary *)parameters;
+                  requestMethod:(NSString *)requestMethod
+                      arguments:(NSDictionary *)arguments
+                     parameters:(NSDictionary *)parameters;
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
                   requestMethod:(NSString *)requestMethod
                      parameters:(NSDictionary *)parameters
-                         images:(NSArray *)images;
+                     imageItems:(NSArray *)imageItems;
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                 requestMethod:(NSString *)requestMethod
-                     arguments:(NSDictionary *)arguments
-                    parameters:(NSDictionary *)parameters
-                        images:(NSArray *)images;
+                  requestMethod:(NSString *)requestMethod
+                      arguments:(NSDictionary *)arguments
+                     parameters:(NSDictionary *)parameters
+                     imageItems:(NSArray *)imageItems;
 
 @property (assign, nonatomic) CGFloat timeoutInterval;
 
 - (void)fireGetWithCompletion:(ASJCompletionBlock)completion;
 - (void)firePostWithCompletion:(ASJCompletionBlock)completion;
+- (void)fireMultipartPostWithCompletion:(ASJCompletionBlock)completion;
 - (void)fireMultipartPostWithProgress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion;
 
 @end

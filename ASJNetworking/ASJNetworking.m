@@ -28,7 +28,7 @@
 @property (copy, nonatomic) NSString *requestMethod;
 @property (copy, nonatomic) NSDictionary *arguments;
 @property (copy, nonatomic) NSDictionary *parameters;
-@property (copy, nonatomic) NSArray *images;
+@property (copy, nonatomic) NSArray *imageItems;
 @property (copy) ASJCompletionBlock callback;
 @property (copy) ASJProgressBlock progress;
 
@@ -43,9 +43,6 @@
 @property (strong, nonatomic) NSMutableData *responseData;
 @property (weak, nonatomic) NSError *responseError;
 
-- (void)fireGetRequest;
-- (void)firePostRequest;
-- (void)fireMultipartPostRequest;
 - (void)parseUrlResponse;
 
 @end
@@ -79,22 +76,22 @@
                       arguments:(NSDictionary *)arguments
                      parameters:(NSDictionary *)parameters
 {
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:arguments parameters:parameters images:nil];
+  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:arguments parameters:parameters imageItems:nil];
 }
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
                   requestMethod:(NSString *)requestMethod
                      parameters:(NSDictionary *)parameters
-                         images:(NSArray *)images
+                     imageItems:(NSArray *)imageItems
 {
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:nil parameters:parameters images:images];
+  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:nil parameters:parameters imageItems:imageItems];
 }
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
                   requestMethod:(NSString *)requestMethod
                       arguments:(NSDictionary *)arguments
                      parameters:(NSDictionary *)parameters
-                         images:(NSArray *)images
+                     imageItems:(NSArray *)imageItems
 {
   self = [super init];
   if (self) {
@@ -102,7 +99,7 @@
     _requestMethod = requestMethod;
     _arguments = arguments;
     _parameters = parameters;
-    _images = images;
+    _imageItems = imageItems;
     _timeoutInterval = 30.0;
     _responseData = [[NSMutableData alloc] init];
   }
@@ -161,6 +158,11 @@
 
 #pragma mark - Multipart post
 
+- (void)fireMultipartPostWithCompletion:(ASJCompletionBlock)completion
+{
+  [self fireMultipartPostWithProgress:nil completion:completion];
+}
+
 - (void)fireMultipartPostWithProgress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion
 {
   _progress = progress;
@@ -189,7 +191,7 @@
    }];
   
   // attach images
-  for (id imageItem in _images)
+  for (id imageItem in _imageItems)
   {
     BOOL success = [imageItem isMemberOfClass:[ASJMultipartImageItem class]];
     if (!success) {
@@ -198,7 +200,7 @@
   }
   
   // attach images
-  for (ASJMultipartImageItem * imageItem in _images)
+  for (ASJMultipartImageItem * imageItem in _imageItems)
   {
     NSData *imageData = UIImageJPEGRepresentation(imageItem.image, 0.6);
     if (imageData) {

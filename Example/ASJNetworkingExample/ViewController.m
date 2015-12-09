@@ -78,10 +78,10 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
   imageItem.filename = @"talk.jpg";
   imageItem.image = [UIImage imageNamed:@"el_capitan"];
   
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL2 requestMethod:nil arguments:nil parameters:p images:@[imageItem]];
-  [networking fireMultipartPostWithProgress:^(CGFloat progressPercentage)
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL2 requestMethod:nil arguments:nil parameters:p imageItems:@[imageItem]];
+  [networking fireMultipartPostWithProgress:^(CGFloat progressPc)
    {
-     progressLabel.text = [NSString stringWithFormat:@"Progress: %.2f%%", progressPercentage];
+     progressLabel.text = [NSString stringWithFormat:@"Progress: %.2f%%", progressPc];
      
    } completion:^(id response, NSString *responseString, NSError *error)
    {

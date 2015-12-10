@@ -10,6 +10,7 @@ Basic networking using NSURLSession and no external dependencies
 
 - To the creators of [AFNetworking](https://github.com/AFNetworking/AFNetworking)
 - To this [Stack Overflow question](http://stackoverflow.com/questions/19099448/send-post-request-using-nsurlsession)
+- To [Abhijit Kayande](https://github.com/Abhijit-Kayande) for *Ctrl+Cmd+Spc*
 
 # License
 

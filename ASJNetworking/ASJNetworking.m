@@ -43,6 +43,7 @@
 @property (strong, nonatomic) NSMutableData *responseData;
 @property (weak, nonatomic) NSError *responseError;
 
+- (void)fireRequestWithHTTPMethod:(NSString *)httpMethod body:(NSData *)httpBody;
 - (void)parseUrlResponse;
 
 @end
@@ -108,7 +109,7 @@
 
 #pragma mark - Get
 
-- (void)fireGetWithCompletion:(ASJCompletionBlock)completion
+- (void)GETWithCompletion:(ASJCompletionBlock)completion
 {
   _callback = completion;
   NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.requestUrl];
@@ -129,17 +130,10 @@
 
 #pragma mark - Post
 
-- (void)firePostWithCompletion:(ASJCompletionBlock)completion
+- (void)POSTWithCompletion:(ASJCompletionBlock)completion
 {
   _callback = completion;
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
-  request.HTTPMethod = @"POST";
-  request.HTTPBody = self.httpBody;
-  [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-  [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-  
-  NSURLSessionDataTask *postDataTask = [self.urlSession dataTaskWithRequest:request];
-  [postDataTask resume];
+  [self fireRequestWithHTTPMethod:@"POST" body:self.httpBody];
 }
 
 - (NSData *)httpBody
@@ -158,12 +152,12 @@
 
 #pragma mark - Multipart post
 
-- (void)fireMultipartPostWithCompletion:(ASJCompletionBlock)completion
+- (void)POSTMultipartWithCompletion:(ASJCompletionBlock)completion
 {
-  [self fireMultipartPostWithProgress:nil completion:completion];
+  [self POSTMultipartWithProgress:nil completion:completion];
 }
 
-- (void)fireMultipartPostWithProgress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion
+- (void)POSTMultipartWithProgress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion
 {
   _progress = progress;
   _callback = completion;
@@ -220,6 +214,30 @@
   return @"--------5A4n88-i269s-h15a--------";
 }
 
+#pragma mark - Put
+
+- (void)PUTWithCompletion:(ASJCompletionBlock)completion
+{
+  _callback = completion;
+  [self fireRequestWithHTTPMethod:@"PUT" body:self.httpBody];
+}
+
+#pragma mark - Patch
+
+- (void)PATCHWithCompletion:(ASJCompletionBlock)completion
+{
+  _callback = completion;
+  [self fireRequestWithHTTPMethod:@"PATCH" body:self.httpBody];
+}
+
+#pragma mark - Delete
+
+- (void)DELETEWithCompletion:(ASJCompletionBlock)completion
+{
+  _callback = completion;
+  [self fireRequestWithHTTPMethod:@"DELETE" body:self.httpBody];
+}
+
 #pragma mark - Request url
 
 - (NSURL *)requestUrl
@@ -255,7 +273,19 @@
   return [tempString substringWithRange:NSMakeRange(0, tempString.length - 1)];
 }
 
-#pragma mark - Parse response
+#pragma mark - Helpers
+
+- (void)fireRequestWithHTTPMethod:(NSString *)httpMethod body:(NSData *)httpBody
+{
+  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
+  request.HTTPMethod = httpMethod;
+  request.HTTPBody = httpBody;
+  [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+  [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+  
+  NSURLSessionDataTask *postDataTask = [self.urlSession dataTaskWithRequest:request];
+  [postDataTask resume];
+}
 
 - (void)parseUrlResponse
 {

@@ -57,10 +57,13 @@ typedef void (^ASJProgressBlock)(CGFloat progressPc);
 
 @property (assign, nonatomic) CGFloat timeoutInterval;
 
-- (void)fireGetWithCompletion:(ASJCompletionBlock)completion;
-- (void)firePostWithCompletion:(ASJCompletionBlock)completion;
-- (void)fireMultipartPostWithCompletion:(ASJCompletionBlock)completion;
-- (void)fireMultipartPostWithProgress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion;
+- (void)GETWithCompletion:(ASJCompletionBlock)completion;
+- (void)POSTWithCompletion:(ASJCompletionBlock)completion;
+- (void)POSTMultipartWithCompletion:(ASJCompletionBlock)completion;
+- (void)POSTMultipartWithProgress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion;
+- (void)PUTWithCompletion:(ASJCompletionBlock)completion;
+- (void)PATCHWithCompletion:(ASJCompletionBlock)completion;
+- (void)DELETEWithCompletion:(ASJCompletionBlock)completion;
 
 @end
 

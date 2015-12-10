@@ -25,13 +25,11 @@
 
 typedef void (^CompletionBlock)(id response, NSString *responseString, NSError *error);
 typedef void (^ProgressBlock)(CGFloat progressPc);
-typedef void (^LoadingIndicatorBlock)();
+typedef void (^RequestBlock)();
 
 @interface ASJNetworking : NSObject
 
 @property (assign, nonatomic) CGFloat timeoutInterval;
-@property (copy) LoadingIndicatorBlock startLoadingIndicatorBlock;
-@property (copy) LoadingIndicatorBlock stopLoadingIndicatorBlock;
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl;
 

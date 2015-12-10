@@ -97,13 +97,13 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
   }];
   
   NSDictionary *p = @{@"imageCaption": @"I am FIROZZZ"};
-  ASJMultipartImageItem *imageItem = [[ASJMultipartImageItem alloc] init];
+  ASJImageItem *imageItem = [[ASJImageItem alloc] init];
   imageItem.name = @"userPhoto";
   imageItem.filename = @"talk.jpg";
   imageItem.image = [UIImage imageNamed:@"el_capitan"];
   
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL2];
-  [networking POSTMultipart:nil parameters:p imageItems:@[imageItem] progress:^(CGFloat progressPc)
+  [networking POST:nil parameters:p imageItems:@[imageItem] progress:^(CGFloat progressPc)
    {
      progressLabel.text = [NSString stringWithFormat:@"Progress: %.2f%%", progressPc];
      

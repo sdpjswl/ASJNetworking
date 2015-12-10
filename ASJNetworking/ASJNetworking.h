@@ -38,9 +38,9 @@ typedef void (^ASJProgressBlock)(CGFloat progressPc);
 
 - (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
 
-- (void)POSTMultipart:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(ASJCompletionBlock)completion;
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(ASJCompletionBlock)completion;
 
-- (void)POSTMultipart:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion;
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion;
 
 - (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
 
@@ -50,10 +50,10 @@ typedef void (^ASJProgressBlock)(CGFloat progressPc);
 
 @end
 
-@interface ASJMultipartImageItem : NSObject
+@interface ASJImageItem : NSObject
 
 @property (copy, nonatomic) NSString *name;
 @property (copy, nonatomic) NSString *filename;
-@property (nonatomic) UIImage *image;
+@property (weak, nonatomic) UIImage *image;
 
 @end

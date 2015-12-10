@@ -101,10 +101,7 @@
 
 - (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
 {
-  _methodName = methodName;
-  _parameters = parameters;
-  _callback = completion;
-  [self fireRequestWithHTTPMethod:@"POST" body:self.httpBody];
+  [self POST:methodName parameters:parameters imageItems:nil completion:completion];
 }
 
 - (NSData *)httpBody
@@ -123,12 +120,12 @@
 
 #pragma mark - Multipart post
 
-- (void)POSTMultipart:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(ASJCompletionBlock)completion
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(ASJCompletionBlock)completion
 {
-  [self POSTMultipart:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
+  [self POST:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
 }
 
-- (void)POSTMultipart:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion
 {
   _methodName = methodName;
   _parameters = parameters;
@@ -161,14 +158,14 @@
   // attach images
   for (id imageItem in _imageItems)
   {
-    BOOL success = [imageItem isMemberOfClass:[ASJMultipartImageItem class]];
+    BOOL success = [imageItem isMemberOfClass:[ASJImageItem class]];
     if (!success) {
-      NSAssert(success, @"Items must be of kind ASJMultipartImageItem");
+      NSAssert(success, @"Items must be of kind ASJImageItem");
     }
   }
   
   // attach images
-  for (ASJMultipartImageItem * imageItem in _imageItems)
+  for (ASJImageItem *imageItem in _imageItems)
   {
     NSData *imageData = UIImageJPEGRepresentation(imageItem.image, 0.6);
     if (imageData) {
@@ -328,6 +325,6 @@
 
 @end
 
-@implementation ASJMultipartImageItem
+@implementation ASJImageItem
 
 @end

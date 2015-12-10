@@ -24,6 +24,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
 - (IBAction)putTapped:(id)sender;
 - (IBAction)patchTapped:(id)sender;
 - (IBAction)deleteTapped:(id)sender;
+- (void)handleResponseString:(NSString *)responseString error:(NSError *)error;
 
 @end
 
@@ -48,10 +49,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     progressLabel.text = @" ";
   }];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
-  [networking GET:@"get" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      textView.text = responseString;
-    }];
+  [networking GET:@"xml" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
+    [self handleResponseString:responseString error:error];
   }];
 }
 
@@ -64,10 +63,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     progressLabel.text = @" ";
   }];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
-  [networking HEAD:@"get" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      textView.text = responseString;
-    }];
+  [networking HEAD:@"xml" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
+    [self handleResponseString:responseString error:error];
   }];
 }
 
@@ -81,9 +78,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
   }];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
   [networking POST:@"post" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      textView.text = responseString;
-    }];
+    [self handleResponseString:responseString error:error];
   }];
 }
 
@@ -109,10 +104,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
      
    } completion:^(id response, NSString *responseString, NSError *error)
    {
-     NSString *message = responseString.length ? responseString : error.localizedDescription;
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       textView.text = message;
-     }];
+     [self handleResponseString:responseString error:error];
    }];
 }
 
@@ -126,9 +118,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
   }];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
   [networking PUT:@"put" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      textView.text = responseString;
-    }];
+    [self handleResponseString:responseString error:error];
   }];
 }
 
@@ -142,9 +132,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
   }];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
   [networking PATCH:@"patch" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      textView.text = responseString;
-    }];
+    [self handleResponseString:responseString error:error];
   }];
 }
 
@@ -158,9 +146,20 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
   }];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
   [networking PATCH:@"delete" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      textView.text = responseString;
-    }];
+    [self handleResponseString:responseString error:error];
+  }];
+}
+
+#pragma mark - Helper
+
+- (void)handleResponseString:(NSString *)responseString error:(NSError *)error
+{
+  NSString *message = responseString.length ? responseString : error.localizedDescription;
+  if (!message) {
+    message = @"No response";
+  }
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    textView.text = message;
   }];
 }
 

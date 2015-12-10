@@ -280,6 +280,9 @@
 - (NSURL *)getRequestUrl
 {
   NSURL *requestUrl = self.requestUrl;
+  if (!_parameters) {
+    return requestUrl;
+  }
   
   __block NSMutableString *tempString = [[NSMutableString alloc] initWithString:requestUrl.absoluteString];
   [tempString appendString:@"?"];

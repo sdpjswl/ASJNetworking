@@ -4,6 +4,8 @@ Basic networking using NSURLSession and no external dependencies
 
 ###To-do
 - Test DELETE request
+- Test DELETE request
+- Check how to send parameters in the header
 
 # Thanks
 

@@ -210,14 +210,10 @@
 
 #pragma mark - NSURLSessionDelegate
 
-/**
- *  using a self signed SSL certificate casues requests to fail. upon detecting
- *  such a certificate, it is unable to validate it. control comes to
- *  this delegate method and when handled, requests will pass through.
- */
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler {
   
+  // using a self signed SSL certificate casues requests to fail
   completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
 }
 

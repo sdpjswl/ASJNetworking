@@ -23,30 +23,33 @@
 @import Foundation;
 @import UIKit;
 
-typedef void (^ASJCompletionBlock)(id response, NSString *responseString, NSError *error);
-typedef void (^ASJProgressBlock)(CGFloat progressPc);
+typedef void (^CompletionBlock)(id response, NSString *responseString, NSError *error);
+typedef void (^ProgressBlock)(CGFloat progressPc);
+typedef void (^LoadingIndicatorBlock)();
 
 @interface ASJNetworking : NSObject
 
 @property (assign, nonatomic) CGFloat timeoutInterval;
+@property (copy) LoadingIndicatorBlock startLoadingIndicatorBlock;
+@property (copy) LoadingIndicatorBlock stopLoadingIndicatorBlock;
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl;
 
-- (void)GET:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+- (void)GET:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
-- (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+- (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(ASJCompletionBlock)completion;
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(CompletionBlock)completion;
 
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion;
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ProgressBlock)progress completion:(CompletionBlock)completion;
 
-- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
-- (void)PATCH:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+- (void)PATCH:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
-- (void)DELETE:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+- (void)DELETE:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
 @end
 

@@ -28,27 +28,28 @@
 @property (copy, nonatomic) NSString *methodName;
 @property (copy, nonatomic) NSDictionary *parameters;
 @property (copy, nonatomic) NSArray *imageItems;
-@property (copy) ASJCompletionBlock callback;
-@property (copy) ASJProgressBlock progress;
+@property (copy) CompletionBlock callback;
+@property (copy) ProgressBlock progress;
 
-@property (readonly, nonatomic) NSURLSession *urlSession;
-@property (readonly, nonatomic) NSURL *requestUrl;
-@property (readonly, nonatomic) NSURL *getRequestUrl;
 @property (readonly, copy, nonatomic) NSData *httpBody;
 @property (readonly, copy, nonatomic) NSData *multipartHttpBody;
 @property (readonly, copy, nonatomic) NSString *boundary;
 
-@property (strong, nonatomic) NSMutableData *responseData;
-@property (weak, nonatomic) NSError *responseError;
+@property (readonly, nonatomic) NSURL *getRequestUrl;
+@property (readonly, nonatomic) NSURL *requestUrl;
+@property (readonly, nonatomic) NSURLSession *urlSession;
 
-- (void)fireRequestWithHTTPMethod:(NSString *)httpMethod body:(NSData *)httpBody;
+@property (strong, nonatomic) NSMutableData *responseData;
+@property (strong, nonatomic) NSError *responseError;
+
+- (void)requestWithHTTPMethod:(NSString *)httpMethod body:(NSData *)httpBody;
 - (void)parseUrlResponse;
 
 @end
 
 @implementation ASJNetworking
 
-#pragma mark - Initialisers
+#pragma mark - Init
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
 {
@@ -61,9 +62,9 @@
   return self;
 }
 
-#pragma mark - Get
+#pragma mark - GET
 
-- (void)GET:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
+- (void)GET:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
   _methodName = methodName;
   _parameters = parameters;
@@ -73,21 +74,9 @@
   [task resume];
 }
 
-- (NSURLSession *)urlSession {
-  static NSURLSession *session = nil;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    session = [NSURLSession sessionWithConfiguration:configuration
-                                            delegate:self
-                                       delegateQueue:[NSOperationQueue mainQueue]];
-  });
-  return session;
-}
+#pragma mark - HEAD
 
-#pragma mark - Head
-
-- (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
+- (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
   _methodName = methodName;
   _parameters = parameters;
@@ -97,35 +86,19 @@
   [task resume];
 }
 
-#pragma mark - Post
+#pragma mark - POST
 
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
   [self POST:methodName parameters:parameters imageItems:nil completion:completion];
 }
 
-- (NSData *)httpBody
-{
-  if (!_parameters) {
-    return nil;
-  }
-  NSError *error;
-  NSData *body = [NSJSONSerialization dataWithJSONObject:_parameters options:0 error:&error];
-  if (error) {
-    NSLog(@"error creating post data: %@", error.localizedDescription);
-    return nil;
-  }
-  return body;
-}
-
-#pragma mark - Multipart post
-
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(ASJCompletionBlock)completion
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(CompletionBlock)completion
 {
   [self POST:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
 }
 
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ProgressBlock)progress completion:(CompletionBlock)completion
 {
   _methodName = methodName;
   _parameters = parameters;
@@ -143,114 +116,39 @@
   [uploadTask resume];
 }
 
-- (NSData *)multipartHttpBody
-{
-  NSMutableData *body = [[NSMutableData alloc] init];
-  
-  // attach parameters
-  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop)
-   {
-     [body appendData:[[NSString stringWithFormat:@"--%@\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-     [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
-     [body appendData:[[NSString stringWithFormat:@"%@\r\n", obj] dataUsingEncoding:NSUTF8StringEncoding]];
-   }];
-  
-  // attach images
-  for (id imageItem in _imageItems)
-  {
-    BOOL success = [imageItem isMemberOfClass:[ASJImageItem class]];
-    if (!success) {
-      NSAssert(success, @"Items must be of kind ASJImageItem");
-    }
-  }
-  
-  // attach images
-  for (ASJImageItem *imageItem in _imageItems)
-  {
-    NSData *imageData = UIImageJPEGRepresentation(imageItem.image, 0.6);
-    if (imageData) {
-      [body appendData:[[NSString stringWithFormat:@"--%@\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-      [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", imageItem.name, imageItem.filename] dataUsingEncoding:NSUTF8StringEncoding]];
-      [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-      [body appendData:imageData];
-      [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-    }
-  }
-  [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-  return [NSData dataWithData:body];
-}
+#pragma mark - PUT
 
-- (NSString *)boundary
-{
-  return @"--------5A4n88-i269s-h15a--------";
-}
-
-#pragma mark - Put
-
-- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
+- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
   _methodName = methodName;
   _parameters = parameters;
   _callback = completion;
-  [self fireRequestWithHTTPMethod:@"PUT" body:self.httpBody];
+  [self requestWithHTTPMethod:@"PUT" body:self.httpBody];
 }
 
-#pragma mark - Patch
+#pragma mark - PATCH
 
-- (void)PATCH:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
+- (void)PATCH:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
   _methodName = methodName;
   _parameters = parameters;
   _callback = completion;
-  [self fireRequestWithHTTPMethod:@"PATCH" body:self.httpBody];
+  [self requestWithHTTPMethod:@"PATCH" body:self.httpBody];
 }
 
-#pragma mark - Delete
+#pragma mark - DELETE
 
-- (void)DELETE:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
+- (void)DELETE:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
   _methodName = methodName;
   _parameters = parameters;
   _callback = completion;
-  [self fireRequestWithHTTPMethod:@"DELETE" body:self.httpBody];
-}
-
-#pragma mark - Request url
-
-- (NSURL *)getRequestUrl
-{
-  NSURL *requestUrl = self.requestUrl;
-  
-  __block NSMutableString *tempString = [[NSMutableString alloc] initWithString:requestUrl.absoluteString];
-  [tempString appendString:@"?"];
-  
-  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-    [tempString appendFormat:@"%@=%@&", key, obj];
-  }];
-  NSString *withParameters = [tempString substringWithRange:NSMakeRange(0, tempString.length - 1)];
-  return [NSURL URLWithString:withParameters];
-}
-
-- (NSURL *)requestUrl
-{
-  // append slash at the end if not present
-  NSString *lastCharacter = [_baseUrl substringFromIndex:_baseUrl.length - 1];
-  BOOL isTerminatedBySlash = [lastCharacter isEqualToString:@"/"] ? YES : NO;
-  if (!isTerminatedBySlash)
-  {
-    _baseUrl = [_baseUrl stringByAppendingString:@"/"];
-  }
-  
-  NSURL *baseUrl = [NSURL URLWithString:_baseUrl];
-  if (!_methodName) {
-    return baseUrl;
-  }
-  return [NSURL URLWithString:_methodName relativeToURL:baseUrl];
+  [self requestWithHTTPMethod:@"DELETE" body:self.httpBody];
 }
 
 #pragma mark - Helpers
 
-- (void)fireRequestWithHTTPMethod:(NSString *)httpMethod body:(NSData *)httpBody
+- (void)requestWithHTTPMethod:(NSString *)httpMethod body:(NSData *)httpBody
 {
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
   request.HTTPMethod = httpMethod;
@@ -323,7 +221,114 @@
   completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
 }
 
+#pragma mark - HTTP body
+
+- (NSData *)httpBody
+{
+  if (!_parameters) {
+    return nil;
+  }
+  NSError *error;
+  NSData *body = [NSJSONSerialization dataWithJSONObject:_parameters options:0 error:&error];
+  if (error) {
+    NSLog(@"error creating post data: %@", error.localizedDescription);
+    return nil;
+  }
+  return body;
+}
+
+- (NSData *)multipartHttpBody
+{
+  NSMutableData *body = [[NSMutableData alloc] init];
+  
+  // attach parameters
+  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop)
+   {
+     [body appendData:[[NSString stringWithFormat:@"--%@\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+     [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
+     [body appendData:[[NSString stringWithFormat:@"%@\r\n", obj] dataUsingEncoding:NSUTF8StringEncoding]];
+   }];
+  
+  // attach images
+  for (id imageItem in _imageItems)
+  {
+    BOOL success = [imageItem isMemberOfClass:[ASJImageItem class]];
+    if (!success) {
+      NSAssert(success, @"Items must be of kind ASJImageItem");
+    }
+  }
+  
+  // attach images
+  for (ASJImageItem *imageItem in _imageItems)
+  {
+    NSData *imageData = UIImageJPEGRepresentation(imageItem.image, 0.6);
+    if (imageData) {
+      [body appendData:[[NSString stringWithFormat:@"--%@\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+      [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", imageItem.name, imageItem.filename] dataUsingEncoding:NSUTF8StringEncoding]];
+      [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+      [body appendData:imageData];
+      [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+  }
+  [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+  return [NSData dataWithData:body];
+}
+
+- (NSString *)boundary
+{
+  return @"--------5A4n88-i269s-h15a--------";
+}
+
+#pragma mark - Request url
+
+- (NSURL *)getRequestUrl
+{
+  NSURL *requestUrl = self.requestUrl;
+  
+  __block NSMutableString *tempString = [[NSMutableString alloc] initWithString:requestUrl.absoluteString];
+  [tempString appendString:@"?"];
+  
+  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
+    [tempString appendFormat:@"%@=%@&", key, obj];
+  }];
+  NSString *withParameters = [tempString substringWithRange:NSMakeRange(0, tempString.length - 1)];
+  return [NSURL URLWithString:withParameters];
+}
+
+- (NSURL *)requestUrl
+{
+  // append slash at the end if not present
+  NSString *lastCharacter = [_baseUrl substringFromIndex:_baseUrl.length - 1];
+  BOOL isTerminatedBySlash = [lastCharacter isEqualToString:@"/"] ? YES : NO;
+  if (!isTerminatedBySlash)
+  {
+    _baseUrl = [_baseUrl stringByAppendingString:@"/"];
+  }
+  
+  NSURL *baseUrl = [NSURL URLWithString:_baseUrl];
+  if (!_methodName) {
+    return baseUrl;
+  }
+  return [NSURL URLWithString:_methodName relativeToURL:baseUrl];
+}
+
+#pragma mark - Url session
+
+- (NSURLSession *)urlSession {
+  static NSURLSession *session = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    session = [NSURLSession sessionWithConfiguration:configuration
+                                            delegate:self
+                                       delegateQueue:[NSOperationQueue mainQueue]];
+  });
+  return session;
+}
+
 @end
+
+#pragma mark - ASJImageItem
 
 @implementation ASJImageItem
 

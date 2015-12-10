@@ -18,6 +18,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
 }
 
 - (IBAction)getTapped:(id)sender;
+- (IBAction)headTapped:(id)sender;
 - (IBAction)postTapped:(id)sender;
 - (IBAction)multipartTapped:(id)sender;
 - (IBAction)putTapped:(id)sender;
@@ -48,6 +49,22 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
   }];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"get"];
   [networking GETWithCompletion:^(id response, NSString *responseString, NSError *error) {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+      textView.text = responseString;
+    }];
+  }];
+}
+
+#pragma mark - HEAD
+
+- (IBAction)headTapped:(id)sender
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    textView.text = @" ";
+    progressLabel.text = @" ";
+  }];
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"get"];
+  [networking HEADWithCompletion:^(id response, NSString *responseString, NSError *error) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       textView.text = responseString;
     }];

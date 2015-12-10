@@ -128,6 +128,15 @@
   return session;
 }
 
+#pragma mark - Head
+
+- (void)HEADWithCompletion:(ASJCompletionBlock)completion
+{
+  _callback = completion;
+  NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.requestUrl];
+  [task resume];
+}
+
 #pragma mark - Post
 
 - (void)POSTWithCompletion:(ASJCompletionBlock)completion

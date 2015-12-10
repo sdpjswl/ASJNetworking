@@ -2,6 +2,9 @@
 
 Basic networking using NSURLSession and no external dependencies
 
+###To-do
+- Test DELETE request
+
 # Thanks
 
 - To the creators of [AFNetworking](https://github.com/AFNetworking/AFNetworking)

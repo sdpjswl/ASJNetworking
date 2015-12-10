@@ -28,43 +28,25 @@ typedef void (^ASJProgressBlock)(CGFloat progressPc);
 
 @interface ASJNetworking : NSObject
 
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod;
-
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-                      arguments:(NSDictionary *)arguments;
-
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-                     parameters:(NSDictionary *)parameters;
-
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-                      arguments:(NSDictionary *)arguments
-                     parameters:(NSDictionary *)parameters;
-
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-                     parameters:(NSDictionary *)parameters
-                     imageItems:(NSArray *)imageItems;
-
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-                      arguments:(NSDictionary *)arguments
-                     parameters:(NSDictionary *)parameters
-                     imageItems:(NSArray *)imageItems;
-
 @property (assign, nonatomic) CGFloat timeoutInterval;
 
-- (void)GETWithCompletion:(ASJCompletionBlock)completion;
-- (void)HEADWithCompletion:(ASJCompletionBlock)completion;
-- (void)POSTWithCompletion:(ASJCompletionBlock)completion;
-- (void)POSTMultipartWithCompletion:(ASJCompletionBlock)completion;
-- (void)POSTMultipartWithProgress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion;
-- (void)PUTWithCompletion:(ASJCompletionBlock)completion;
-- (void)PATCHWithCompletion:(ASJCompletionBlock)completion;
-- (void)DELETEWithCompletion:(ASJCompletionBlock)completion;
+- (instancetype)initWithBaseUrl:(NSString *)baseUrl;
+
+- (void)GET:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+
+- (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+
+- (void)POSTMultipart:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(ASJCompletionBlock)completion;
+
+- (void)POSTMultipart:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion;
+
+- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+
+- (void)PATCH:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
+
+- (void)DELETE:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion;
 
 @end
 

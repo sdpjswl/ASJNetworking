@@ -47,8 +47,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     textView.text = @" ";
     progressLabel.text = @" ";
   }];
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"get"];
-  [networking GETWithCompletion:^(id response, NSString *responseString, NSError *error) {
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
+  [networking GET:@"get" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       textView.text = responseString;
     }];
@@ -63,8 +63,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     textView.text = @" ";
     progressLabel.text = @" ";
   }];
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"get"];
-  [networking HEADWithCompletion:^(id response, NSString *responseString, NSError *error) {
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
+  [networking HEAD:@"get" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       textView.text = responseString;
     }];
@@ -79,8 +79,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     textView.text = @" ";
     progressLabel.text = @" ";
   }];
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"post"];
-  [networking POSTWithCompletion:^(id response, NSString *responseString, NSError *error) {
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
+  [networking POST:@"post" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       textView.text = responseString;
     }];
@@ -102,8 +102,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
   imageItem.filename = @"talk.jpg";
   imageItem.image = [UIImage imageNamed:@"el_capitan"];
   
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL2 requestMethod:nil arguments:nil parameters:p imageItems:@[imageItem]];
-  [networking POSTMultipartWithProgress:^(CGFloat progressPc)
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL2];
+  [networking POSTMultipart:nil parameters:p imageItems:@[imageItem] progress:^(CGFloat progressPc)
    {
      progressLabel.text = [NSString stringWithFormat:@"Progress: %.2f%%", progressPc];
      
@@ -124,8 +124,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     textView.text = @" ";
     progressLabel.text = @" ";
   }];
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"put"];
-  [networking PUTWithCompletion:^(id response, NSString *responseString, NSError *error) {
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
+  [networking PUT:@"put" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       textView.text = responseString;
     }];
@@ -140,8 +140,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     textView.text = @" ";
     progressLabel.text = @" ";
   }];
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"patch"];
-  [networking PATCHWithCompletion:^(id response, NSString *responseString, NSError *error) {
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
+  [networking PATCH:@"patch" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       textView.text = responseString;
     }];
@@ -156,8 +156,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     textView.text = @" ";
     progressLabel.text = @" ";
   }];
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL requestMethod:@"delete"];
-  [networking DELETEWithCompletion:^(id response, NSString *responseString, NSError *error) {
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
+  [networking PATCH:@"delete" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       textView.text = responseString;
     }];

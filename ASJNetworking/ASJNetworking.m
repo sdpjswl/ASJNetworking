@@ -25,8 +25,7 @@
 @interface ASJNetworking () <NSURLSessionDataDelegate>
 
 @property (copy, nonatomic) NSString *baseUrl;
-@property (copy, nonatomic) NSString *requestMethod;
-@property (copy, nonatomic) NSDictionary *arguments;
+@property (copy, nonatomic) NSString *methodName;
 @property (copy, nonatomic) NSDictionary *parameters;
 @property (copy, nonatomic) NSArray *imageItems;
 @property (copy) ASJCompletionBlock callback;
@@ -34,8 +33,7 @@
 
 @property (readonly, nonatomic) NSURLSession *urlSession;
 @property (readonly, nonatomic) NSURL *requestUrl;
-@property (readonly, nonatomic) NSURL *requestUrlWithRequestMethodAndArguments;
-@property (readonly, copy, nonatomic) NSString *requestUrlStringWithArguments;
+@property (readonly, nonatomic) NSURL *getRequestUrl;
 @property (readonly, copy, nonatomic) NSData *httpBody;
 @property (readonly, copy, nonatomic) NSData *multipartHttpBody;
 @property (readonly, copy, nonatomic) NSString *boundary;
@@ -53,54 +51,10 @@
 #pragma mark - Initialisers
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-{
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:nil];
-}
-
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-                      arguments:(NSDictionary *)arguments
-{
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:arguments parameters:nil];
-}
-
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-                     parameters:(NSDictionary *)parameters
-{
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:nil parameters:parameters];
-}
-
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-                      arguments:(NSDictionary *)arguments
-                     parameters:(NSDictionary *)parameters
-{
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:arguments parameters:parameters imageItems:nil];
-}
-
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-                     parameters:(NSDictionary *)parameters
-                     imageItems:(NSArray *)imageItems
-{
-  return [self initWithBaseUrl:baseUrl requestMethod:requestMethod arguments:nil parameters:parameters imageItems:imageItems];
-}
-
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl
-                  requestMethod:(NSString *)requestMethod
-                      arguments:(NSDictionary *)arguments
-                     parameters:(NSDictionary *)parameters
-                     imageItems:(NSArray *)imageItems
 {
   self = [super init];
   if (self) {
     _baseUrl = baseUrl;
-    _requestMethod = requestMethod;
-    _arguments = arguments;
-    _parameters = parameters;
-    _imageItems = imageItems;
     _timeoutInterval = 30.0;
     _responseData = [[NSMutableData alloc] init];
   }
@@ -109,10 +63,13 @@
 
 #pragma mark - Get
 
-- (void)GETWithCompletion:(ASJCompletionBlock)completion
+- (void)GET:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
 {
+  _methodName = methodName;
+  _parameters = parameters;
   _callback = completion;
-  NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.requestUrl];
+  
+  NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.getRequestUrl];
   [task resume];
 }
 
@@ -130,17 +87,22 @@
 
 #pragma mark - Head
 
-- (void)HEADWithCompletion:(ASJCompletionBlock)completion
+- (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
 {
+  _methodName = methodName;
+  _parameters = parameters;
   _callback = completion;
-  NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.requestUrl];
+  
+  NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.getRequestUrl];
   [task resume];
 }
 
 #pragma mark - Post
 
-- (void)POSTWithCompletion:(ASJCompletionBlock)completion
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
 {
+  _methodName = methodName;
+  _parameters = parameters;
   _callback = completion;
   [self fireRequestWithHTTPMethod:@"POST" body:self.httpBody];
 }
@@ -161,13 +123,16 @@
 
 #pragma mark - Multipart post
 
-- (void)POSTMultipartWithCompletion:(ASJCompletionBlock)completion
+- (void)POSTMultipart:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(ASJCompletionBlock)completion
 {
-  [self POSTMultipartWithProgress:nil completion:completion];
+  [self POSTMultipart:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
 }
 
-- (void)POSTMultipartWithProgress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion
+- (void)POSTMultipart:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ASJProgressBlock)progress completion:(ASJCompletionBlock)completion
 {
+  _methodName = methodName;
+  _parameters = parameters;
+  _imageItems = imageItems;
   _progress = progress;
   _callback = completion;
   
@@ -225,36 +190,51 @@
 
 #pragma mark - Put
 
-- (void)PUTWithCompletion:(ASJCompletionBlock)completion
+- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
 {
+  _methodName = methodName;
+  _parameters = parameters;
   _callback = completion;
   [self fireRequestWithHTTPMethod:@"PUT" body:self.httpBody];
 }
 
 #pragma mark - Patch
 
-- (void)PATCHWithCompletion:(ASJCompletionBlock)completion
+- (void)PATCH:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
 {
+  _methodName = methodName;
+  _parameters = parameters;
   _callback = completion;
   [self fireRequestWithHTTPMethod:@"PATCH" body:self.httpBody];
 }
 
 #pragma mark - Delete
 
-- (void)DELETEWithCompletion:(ASJCompletionBlock)completion
+- (void)DELETE:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(ASJCompletionBlock)completion
 {
+  _methodName = methodName;
+  _parameters = parameters;
   _callback = completion;
   [self fireRequestWithHTTPMethod:@"DELETE" body:self.httpBody];
 }
 
 #pragma mark - Request url
 
-- (NSURL *)requestUrl
+- (NSURL *)getRequestUrl
 {
-  return self.requestUrlWithRequestMethodAndArguments;
+  NSURL *requestUrl = self.requestUrl;
+  
+  __block NSMutableString *tempString = [[NSMutableString alloc] initWithString:requestUrl.absoluteString];
+  [tempString appendString:@"?"];
+  
+  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
+    [tempString appendFormat:@"%@=%@&", key, obj];
+  }];
+  NSString *withParameters = [tempString substringWithRange:NSMakeRange(0, tempString.length - 1)];
+  return [NSURL URLWithString:withParameters];
 }
 
-- (NSURL *)requestUrlWithRequestMethodAndArguments
+- (NSURL *)requestUrl
 {
   // append slash at the end if not present
   NSString *lastCharacter = [_baseUrl substringFromIndex:_baseUrl.length - 1];
@@ -265,21 +245,10 @@
   }
   
   NSURL *baseUrl = [NSURL URLWithString:_baseUrl];
-  if (!_requestMethod) {
+  if (!_methodName) {
     return baseUrl;
   }
-  baseUrl = [NSURL URLWithString:_requestMethod relativeToURL:baseUrl];
-  NSString *withArguments = [baseUrl.absoluteString stringByAppendingString:self.requestUrlStringWithArguments];
-  return [NSURL URLWithString:withArguments];
-}
-
-- (NSString *)requestUrlStringWithArguments
-{
-  __block NSMutableString *tempString = [[NSMutableString alloc] initWithString:@"?"];
-  [_arguments enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-    [tempString appendFormat:@"%@=%@&", key, obj];
-  }];
-  return [tempString substringWithRange:NSMakeRange(0, tempString.length - 1)];
+  return [NSURL URLWithString:_methodName relativeToURL:baseUrl];
 }
 
 #pragma mark - Helpers

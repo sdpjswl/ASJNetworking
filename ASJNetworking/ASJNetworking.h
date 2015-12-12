@@ -57,4 +57,6 @@ typedef void (^RequestBlock)();
 @property (copy, nonatomic) NSString *filename;
 @property (weak, nonatomic) UIImage *image;
 
++ (ASJImageItem *)imageItemWithName:(NSString *)name fileName:(NSString *)filename image:(UIImage *)image;
+
 @end

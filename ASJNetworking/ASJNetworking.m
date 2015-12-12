@@ -331,4 +331,13 @@
 
 @implementation ASJImageItem
 
++ (ASJImageItem *)imageItemWithName:(NSString *)name fileName:(NSString *)filename image:(UIImage *)image
+{
+  ASJImageItem *item = [[ASJImageItem alloc] init];
+  item.name = name;
+  item.filename = filename;
+  item.image = image;
+  return item;
+}
+
 @end

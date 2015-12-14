@@ -49,7 +49,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     progressLabel.text = @" ";
   }];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
-  [networking GET:@"xml" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
+  [networking GET:@"cache" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [self handleResponseString:responseString error:error];
   }];
 }
@@ -63,7 +63,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     progressLabel.text = @" ";
   }];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
-  [networking HEAD:@"xml" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
+  [networking HEAD:@"cache" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [self handleResponseString:responseString error:error];
   }];
 }

@@ -79,11 +79,14 @@
 - (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
   _methodName = methodName;
-  _parameters = parameters;
   _callback = completion;
   
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:self.getRequestUrl];
+  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:self.requestUrl];
   request.HTTPMethod = @"HEAD";
+  [parameters enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop)
+  {
+    [request setValue:obj forKey:key];
+  }];
   NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request];
   [task resume];
 }

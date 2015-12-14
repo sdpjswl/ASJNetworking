@@ -82,7 +82,9 @@
   _parameters = parameters;
   _callback = completion;
   
-  NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.getRequestUrl];
+  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:self.getRequestUrl];
+  request.HTTPMethod = @"HEAD";
+  NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request];
   [task resume];
 }
 

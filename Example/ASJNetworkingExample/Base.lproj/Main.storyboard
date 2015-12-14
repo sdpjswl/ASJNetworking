@@ -34,7 +34,7 @@
                                 </variation>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sov-On-bw2">
-                                <rect key="frame" x="25" y="132" width="138" height="30"/>
+                                <rect key="frame" x="25" y="132" width="183" height="30"/>
                                 <animations/>
                                 <state key="normal" title="GET">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -44,17 +44,17 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GlE-aL-yl0">
-                                <rect key="frame" x="25" y="94" width="30" height="30"/>
+                                <rect key="frame" x="163" y="94" width="137" height="30"/>
                                 <animations/>
-                                <state key="normal" title="PUT">
+                                <state key="normal" title="PATCH">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="putTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="mTw-hG-Pdt"/>
+                                    <action selector="patchTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="jFr-5R-F9z"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qCg-qa-xFe">
-                                <rect key="frame" x="438" y="132" width="137" height="30"/>
+                                <rect key="frame" x="392" y="132" width="183" height="30"/>
                                 <animations/>
                                 <state key="normal" title="📸 POST">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -64,13 +64,13 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4V9-hZ-UUi">
-                                <rect key="frame" x="300" y="132" width="138" height="30"/>
+                                <rect key="frame" x="208" y="132" width="184" height="30"/>
                                 <animations/>
                                 <state key="normal" title="POST">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="postTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="kQD-Ub-mRD"/>
+                                    <action selector="postTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="ncg-5P-U8C"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Progress" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="koo-23-6Am">
@@ -92,17 +92,17 @@
                                 </variation>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ovv-Vo-bE7">
-                                <rect key="frame" x="276" y="94" width="48" height="30"/>
+                                <rect key="frame" x="300" y="94" width="138" height="30"/>
                                 <animations/>
-                                <state key="normal" title="PATCH">
+                                <state key="normal" title="PUT">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="patchTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="ZPO-zG-y5u"/>
+                                    <action selector="putTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="bay-3v-R8c"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sEC-uM-ddC">
-                                <rect key="frame" x="520" y="94" width="55" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sEC-uM-ddC">
+                                <rect key="frame" x="438" y="94" width="137" height="30"/>
                                 <animations/>
                                 <state key="normal" title="DELETE">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -111,8 +111,8 @@
                                     <action selector="deleteTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="1lq-lo-rOz"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kcx-wj-xwg">
-                                <rect key="frame" x="163" y="132" width="137" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kcx-wj-xwg">
+                                <rect key="frame" x="25" y="94" width="138" height="30"/>
                                 <animations/>
                                 <state key="normal" title="HEAD"/>
                                 <connections>
@@ -123,8 +123,11 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="ovv-Vo-bE7" firstAttribute="width" secondItem="kcx-wj-xwg" secondAttribute="width" id="1rG-uT-RB4"/>
+                            <constraint firstItem="ovv-Vo-bE7" firstAttribute="leading" secondItem="GlE-aL-yl0" secondAttribute="trailing" id="4pT-lA-M1h"/>
                             <constraint firstItem="GlE-aL-yl0" firstAttribute="centerY" secondItem="ovv-Vo-bE7" secondAttribute="centerY" id="62N-0T-WTT"/>
                             <constraint firstItem="4V9-hZ-UUi" firstAttribute="centerX" secondItem="ovv-Vo-bE7" secondAttribute="centerX" id="6J2-VJ-Smu"/>
+                            <constraint firstItem="ovv-Vo-bE7" firstAttribute="centerY" secondItem="kcx-wj-xwg" secondAttribute="centerY" id="7LP-hA-VDq"/>
                             <constraint firstItem="4V9-hZ-UUi" firstAttribute="centerY" secondItem="Sov-On-bw2" secondAttribute="centerY" id="7Rn-CW-q92"/>
                             <constraint firstItem="qCg-qa-xFe" firstAttribute="leading" secondItem="4V9-hZ-UUi" secondAttribute="trailing" id="85z-lG-Rwu"/>
                             <constraint firstItem="qCg-qa-xFe" firstAttribute="width" secondItem="Sov-On-bw2" secondAttribute="width" id="8aC-bu-XSg"/>
@@ -139,29 +142,45 @@
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="IRH-iW-svS" secondAttribute="bottom" constant="25" id="Olk-iM-5v2"/>
                             <constraint firstItem="qCg-qa-xFe" firstAttribute="trailing" secondItem="IRH-iW-svS" secondAttribute="trailing" id="R2X-N1-N75"/>
                             <constraint firstItem="4V9-hZ-UUi" firstAttribute="width" secondItem="Sov-On-bw2" secondAttribute="width" id="SMt-Pa-rFn"/>
+                            <constraint firstItem="sEC-uM-ddC" firstAttribute="centerY" secondItem="kcx-wj-xwg" secondAttribute="centerY" id="Tc7-2F-KcA"/>
                             <constraint firstAttribute="centerX" secondItem="IRH-iW-svS" secondAttribute="centerX" id="VmL-83-WIC"/>
                             <constraint firstItem="IRH-iW-svS" firstAttribute="top" secondItem="Sov-On-bw2" secondAttribute="bottom" constant="8" id="WNG-vb-4OW"/>
                             <constraint firstItem="qCg-qa-xFe" firstAttribute="trailing" secondItem="sEC-uM-ddC" secondAttribute="trailing" id="WQA-XW-vde"/>
+                            <constraint firstItem="sEC-uM-ddC" firstAttribute="leading" secondItem="ovv-Vo-bE7" secondAttribute="trailing" id="YHZ-bn-sbe"/>
                             <constraint firstItem="4V9-hZ-UUi" firstAttribute="leading" secondItem="kcx-wj-xwg" secondAttribute="trailing" id="YOF-zd-5yY"/>
                             <constraint firstItem="koo-23-6Am" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="25" id="ZyY-Nn-ODZ"/>
+                            <constraint firstItem="GlE-aL-yl0" firstAttribute="centerY" secondItem="kcx-wj-xwg" secondAttribute="centerY" id="asQ-lQ-lmX"/>
                             <constraint firstItem="kcx-wj-xwg" firstAttribute="centerY" secondItem="Sov-On-bw2" secondAttribute="centerY" id="b8i-76-RqB"/>
+                            <constraint firstItem="Sov-On-bw2" firstAttribute="top" secondItem="kcx-wj-xwg" secondAttribute="bottom" constant="8" id="btG-zf-610"/>
                             <constraint firstItem="kcx-wj-xwg" firstAttribute="width" secondItem="Sov-On-bw2" secondAttribute="width" id="c4B-5N-7bE"/>
                             <constraint firstItem="Sov-On-bw2" firstAttribute="leading" secondItem="GlE-aL-yl0" secondAttribute="leading" id="c8k-5Z-g37"/>
                             <constraint firstItem="IRH-iW-svS" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="25" id="dmO-14-se9"/>
                             <constraint firstItem="qCg-qa-xFe" firstAttribute="centerY" secondItem="Sov-On-bw2" secondAttribute="centerY" id="eO0-d6-Utm"/>
                             <constraint firstItem="kcx-wj-xwg" firstAttribute="leading" secondItem="Sov-On-bw2" secondAttribute="trailing" id="fTk-nr-JPZ"/>
+                            <constraint firstItem="Sov-On-bw2" firstAttribute="leading" secondItem="kcx-wj-xwg" secondAttribute="leading" id="hIe-gf-AqN"/>
                             <constraint firstItem="4V9-hZ-UUi" firstAttribute="centerX" secondItem="koo-23-6Am" secondAttribute="centerX" id="hS2-a3-Kgu"/>
+                            <constraint firstItem="GlE-aL-yl0" firstAttribute="width" secondItem="kcx-wj-xwg" secondAttribute="width" id="hre-lI-DJN"/>
+                            <constraint firstItem="sEC-uM-ddC" firstAttribute="width" secondItem="kcx-wj-xwg" secondAttribute="width" id="j8M-YX-TXk"/>
                             <constraint firstItem="GlE-aL-yl0" firstAttribute="top" secondItem="koo-23-6Am" secondAttribute="bottom" constant="25" id="sad-ir-AKE"/>
                             <constraint firstAttribute="centerX" secondItem="4V9-hZ-UUi" secondAttribute="centerX" id="twg-rQ-J8c"/>
+                            <constraint firstItem="GlE-aL-yl0" firstAttribute="leading" secondItem="kcx-wj-xwg" secondAttribute="trailing" id="wCG-wK-ev9"/>
+                            <constraint firstItem="4V9-hZ-UUi" firstAttribute="leading" secondItem="Sov-On-bw2" secondAttribute="trailing" id="xcZ-D8-HuK"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="b8i-76-RqB"/>
+                                <exclude reference="c4B-5N-7bE"/>
+                                <exclude reference="fTk-nr-JPZ"/>
+                                <exclude reference="Jw7-tv-ZXE"/>
+                                <exclude reference="c8k-5Z-g37"/>
                                 <exclude reference="Aqe-OJ-xiL"/>
                                 <exclude reference="Ido-tg-gzs"/>
                                 <exclude reference="VmL-83-WIC"/>
                                 <exclude reference="6J2-VJ-Smu"/>
+                                <exclude reference="YOF-zd-5yY"/>
                                 <exclude reference="hS2-a3-Kgu"/>
                                 <exclude reference="twg-rQ-J8c"/>
+                                <exclude reference="L4O-oG-GhY"/>
                             </mask>
                         </variation>
                     </view>

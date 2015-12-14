@@ -3,7 +3,7 @@
 Basic networking using NSURLSession and no external dependencies
 
 ###To-do
-- Test DELETE request
+- ~~Test DELETE request~~
 - Test HEAD request
 - Check how to send parameters in the header
 - Check for nil values in image items

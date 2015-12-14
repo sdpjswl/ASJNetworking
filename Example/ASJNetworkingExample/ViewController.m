@@ -145,7 +145,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     progressLabel.text = @" ";
   }];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
-  [networking PATCH:@"delete" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
+  [networking DELETE:@"delete" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [self handleResponseString:responseString error:error];
   }];
 }

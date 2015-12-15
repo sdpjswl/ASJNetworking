@@ -11,6 +11,7 @@
 
 static NSString *const kBaseURL = @"http://httpbin.org";
 static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
+static NSString *const kBaseURL3 = @"http://www.google.com";
 
 @interface ViewController () {
   IBOutlet UITextView *textView;
@@ -62,8 +63,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     textView.text = @" ";
     progressLabel.text = @" ";
   }];
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
-  [networking HEAD:@"cache" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL3];
+  [networking HEAD:nil parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [self handleResponseString:responseString error:error];
   }];
 }

@@ -7,6 +7,7 @@ Basic networking using NSURLSession and no external dependencies
 - Test HEAD request
 - Check how to send parameters in the header
 - Check for nil values in image items
+- How to make categories to set image on image view etc.
 
 # Thanks
 

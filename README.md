@@ -8,6 +8,8 @@ Basic networking using NSURLSession and no external dependencies
 - Check how to send parameters in the header
 - Check for nil values in image items
 - How to make categories to set image on image view etc.
+- Add network activity indicator support
+- Add multipart to PUT request
 
 # Thanks
 

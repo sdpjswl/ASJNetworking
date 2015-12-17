@@ -11,7 +11,6 @@
 
 static NSString *const kBaseURL = @"http://httpbin.org";
 static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
-static NSString *const kBaseURL3 = @"http://www.google.com";
 
 @interface ViewController () {
   IBOutlet UITextView *textView;
@@ -25,6 +24,8 @@ static NSString *const kBaseURL3 = @"http://www.google.com";
 - (IBAction)putTapped:(id)sender;
 - (IBAction)patchTapped:(id)sender;
 - (IBAction)deleteTapped:(id)sender;
+
+- (void)clearLabelAndTextView;
 - (void)handleResponseString:(NSString *)responseString error:(NSError *)error;
 
 @end
@@ -45,12 +46,9 @@ static NSString *const kBaseURL3 = @"http://www.google.com";
 
 - (IBAction)getTapped:(id)sender
 {
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    textView.text = @" ";
-    progressLabel.text = @" ";
-  }];
+  [self clearLabelAndTextView];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
-  [networking GET:@"cache" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
+  [networking GET:@"get" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [self handleResponseString:responseString error:error];
   }];
 }
@@ -59,12 +57,9 @@ static NSString *const kBaseURL3 = @"http://www.google.com";
 
 - (IBAction)headTapped:(id)sender
 {
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    textView.text = @" ";
-    progressLabel.text = @" ";
-  }];
-  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL3];
-  [networking HEAD:nil parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
+  [self clearLabelAndTextView];
+  ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
+  [networking HEAD:@"get" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [self handleResponseString:responseString error:error];
   }];
 }
@@ -73,10 +68,7 @@ static NSString *const kBaseURL3 = @"http://www.google.com";
 
 - (IBAction)postTapped:(id)sender
 {
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    textView.text = @" ";
-    progressLabel.text = @" ";
-  }];
+  [self clearLabelAndTextView];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
   [networking POST:@"post" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [self handleResponseString:responseString error:error];
@@ -87,10 +79,7 @@ static NSString *const kBaseURL3 = @"http://www.google.com";
 
 - (IBAction)multipartTapped:(id)sender
 {
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    textView.text = @" ";
-    progressLabel.text = @" ";
-  }];
+  [self clearLabelAndTextView];
   
   NSDictionary *p = @{@"imageCaption": @"I am FIROZZZ"};
   ASJImageItem *imageItem = [[ASJImageItem alloc] init];
@@ -113,10 +102,7 @@ static NSString *const kBaseURL3 = @"http://www.google.com";
 
 - (IBAction)putTapped:(id)sender
 {
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    textView.text = @" ";
-    progressLabel.text = @" ";
-  }];
+  [self clearLabelAndTextView];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
   [networking PUT:@"put" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [self handleResponseString:responseString error:error];
@@ -127,10 +113,7 @@ static NSString *const kBaseURL3 = @"http://www.google.com";
 
 - (IBAction)patchTapped:(id)sender
 {
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    textView.text = @" ";
-    progressLabel.text = @" ";
-  }];
+  [self clearLabelAndTextView];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
   [networking PATCH:@"patch" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [self handleResponseString:responseString error:error];
@@ -141,10 +124,7 @@ static NSString *const kBaseURL3 = @"http://www.google.com";
 
 - (IBAction)deleteTapped:(id)sender
 {
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    textView.text = @" ";
-    progressLabel.text = @" ";
-  }];
+  [self clearLabelAndTextView];
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL];
   [networking DELETE:@"delete" parameters:nil completion:^(id response, NSString *responseString, NSError *error) {
     [self handleResponseString:responseString error:error];
@@ -152,6 +132,14 @@ static NSString *const kBaseURL3 = @"http://www.google.com";
 }
 
 #pragma mark - Helper
+
+- (void)clearLabelAndTextView
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    textView.text = @" ";
+    progressLabel.text = @" ";
+  }];
+}
 
 - (void)handleResponseString:(NSString *)responseString error:(NSError *)error
 {

@@ -28,7 +28,7 @@
 @property (copy, nonatomic) NSString *methodName;
 @property (copy, nonatomic) NSDictionary *parameters;
 @property (copy, nonatomic) NSArray *imageItems;
-@property (copy) CompletionBlock callback;
+@property (copy, nonatomic) CompletionBlock callback;
 @property (copy) ProgressBlock progress;
 
 @property (readonly, copy, nonatomic) NSData *httpBody;
@@ -39,10 +39,14 @@
 @property (readonly, nonatomic) NSURL *requestUrl;
 @property (readonly, nonatomic) NSURLSession *urlSession;
 
-@property (strong, nonatomic) NSMutableData *responseData;
+@property (copy, nonatomic) NSMutableData *responseData;
+@property (copy, nonatomic) NSString *responseString;
 @property (strong, nonatomic) NSError *responseError;
+@property (assign, nonatomic) BOOL showNetworkActivityIndicator;
 
-- (void)requestWithHTTPMethod:(NSString *)httpMethod body:(NSData *)httpBody;
+- (void)runRequestWithHTTPMethod:(NSString *)httpMethod;
+- (void)runMultipartRequestWithHTTPMethod:(NSString *)httpMethod;
+- (void)handleHEADRequestForResponse:(NSURLResponse *)response;
 - (void)parseUrlResponse;
 
 @end
@@ -71,6 +75,7 @@
   _callback = completion;
   
   NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.getRequestUrl];
+  self.showNetworkActivityIndicator = YES;
   [task resume];
 }
 
@@ -79,15 +84,14 @@
 - (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
   _methodName = methodName;
+  _parameters = parameters;
   _callback = completion;
   
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:self.requestUrl];
+  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:self.getRequestUrl];
   request.HTTPMethod = @"HEAD";
-  [parameters enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop)
-  {
-    [request setValue:obj forKey:key];
-  }];
+  
   NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request];
+  self.showNetworkActivityIndicator = YES;
   [task resume];
 }
 
@@ -110,15 +114,7 @@
   _imageItems = imageItems;
   _progress = progress;
   _callback = completion;
-  
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
-  request.HTTPMethod = @"POST";
-  request.HTTPBody = self.multipartHttpBody;
-  [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-  [request addValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.boundary] forHTTPHeaderField:@"Content-Type"];
-  
-  NSURLSessionDataTask *uploadTask = [self.urlSession dataTaskWithRequest:request];
-  [uploadTask resume];
+  [self runMultipartRequestWithHTTPMethod:@"POST"];
 }
 
 #pragma mark - PUT
@@ -128,7 +124,22 @@
   _methodName = methodName;
   _parameters = parameters;
   _callback = completion;
-  [self requestWithHTTPMethod:@"PUT" body:self.httpBody];
+  [self runRequestWithHTTPMethod:@"PUT"];
+}
+
+- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(CompletionBlock)completion
+{
+  [self PUT:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
+}
+
+- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ProgressBlock)progress completion:(CompletionBlock)completion
+{
+  _methodName = methodName;
+  _parameters = parameters;
+  _imageItems = imageItems;
+  _progress = progress;
+  _callback = completion;
+  [self runMultipartRequestWithHTTPMethod:@"PUT"];
 }
 
 #pragma mark - PATCH
@@ -138,7 +149,7 @@
   _methodName = methodName;
   _parameters = parameters;
   _callback = completion;
-  [self requestWithHTTPMethod:@"PATCH" body:self.httpBody];
+  [self runRequestWithHTTPMethod:@"PATCH"];
 }
 
 #pragma mark - DELETE
@@ -148,26 +159,43 @@
   _methodName = methodName;
   _parameters = parameters;
   _callback = completion;
-  [self requestWithHTTPMethod:@"DELETE" body:self.httpBody];
+  [self runRequestWithHTTPMethod:@"DELETE"];
 }
 
-#pragma mark - Helpers
+#pragma mark - Run request
 
-- (void)requestWithHTTPMethod:(NSString *)httpMethod body:(NSData *)httpBody
+- (void)runRequestWithHTTPMethod:(NSString *)httpMethod
 {
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
   request.HTTPMethod = httpMethod;
-  request.HTTPBody = httpBody;
+  request.HTTPBody = self.httpBody;
   [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
   [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
   
   NSURLSessionDataTask *postDataTask = [self.urlSession dataTaskWithRequest:request];
+  self.showNetworkActivityIndicator = YES;
   [postDataTask resume];
 }
+
+- (void)runMultipartRequestWithHTTPMethod:(NSString *)httpMethod
+{
+  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
+  request.HTTPMethod = httpMethod;
+  request.HTTPBody = self.multipartHttpBody;
+  [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+  [request addValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.boundary] forHTTPHeaderField:@"Content-Type"];
+  
+  NSURLSessionDataTask *uploadTask = [self.urlSession dataTaskWithRequest:request];
+  self.showNetworkActivityIndicator = YES;
+  [uploadTask resume];
+}
+
+#pragma mark - Parsing
 
 - (void)parseUrlResponse
 {
   if (!_callback) {
+    self.showNetworkActivityIndicator = NO;
     return;
   }
   
@@ -178,6 +206,7 @@
   NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
   if (!data) {
     _callback(data, responseString, _responseError);
+    self.showNetworkActivityIndicator = NO;
     return;
   }
   
@@ -185,10 +214,44 @@
   id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
   if (_callback) {
     _callback(json, responseString, _responseError);
+    self.showNetworkActivityIndicator = NO;
   }
 }
 
 #pragma mark - NSURLSessionDataDelegate
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
+{
+  BOOL isHEADRequest = [dataTask.originalRequest.HTTPMethod isEqualToString:@"HEAD"];
+  if (isHEADRequest)
+  {
+    [self handleHEADRequestForResponse:response];
+    return;
+  }
+  completionHandler(NSURLSessionResponseAllow);
+}
+
+- (void)handleHEADRequestForResponse:(NSURLResponse *)response
+{
+  if (!_callback) {
+    self.showNetworkActivityIndicator = NO;
+    return;
+  }
+  
+  NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
+  NSError *error = nil;
+  NSData *data = [NSJSONSerialization dataWithJSONObject:headers options:NSJSONWritingPrettyPrinted error:&error];
+  if (error)
+  {
+    _callback(headers, nil, error);
+    self.showNetworkActivityIndicator = NO;
+    return;
+  }
+  NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+  _callback(headers, jsonString, nil);
+  self.showNetworkActivityIndicator = NO;
+  return;
+}
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
@@ -256,6 +319,12 @@
     BOOL success = [imageItem isMemberOfClass:[ASJImageItem class]];
     if (!success) {
       NSAssert(success, @"Items must be of kind ASJImageItem");
+    }
+    
+    ASJImageItem *imageItemObject = (ASJImageItem *)imageItem;
+    BOOL nilCheck = (imageItemObject.name && imageItemObject.filename && imageItemObject.image);
+    if (!nilCheck) {
+      NSAssert(nilCheck, @"ASJImageItem properties name, filename and image must not be nil");
     }
   }
   
@@ -328,6 +397,27 @@
                                        delegateQueue:[NSOperationQueue mainQueue]];
   });
   return session;
+}
+
+#pragma mark - Network activity indicator
+
+- (void)setShowNetworkActivityIndicator:(BOOL)showNetworkActivityIndicator
+{
+  BOOL isVisible = [UIApplication sharedApplication].isNetworkActivityIndicatorVisible;
+  if (showNetworkActivityIndicator)
+  {
+    if (isVisible) {
+      return;
+    }
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+  }
+  else
+  {
+    if (!isVisible) {
+      return;
+    }
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+  }
 }
 
 @end

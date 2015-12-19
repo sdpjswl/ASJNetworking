@@ -16,7 +16,7 @@ Making requests is simple. You will first need to create an instance of `ASJNetw
 ```objc
 ASJNetworking *getRequest = [[ASJNetworking alloc] initWithBaseUrl:@"http://example.com"];
 [getRequest GET:@"method_name" parameters:params completion:^(id response, NSString *responseString, NSError *error) {
-// handle response
+  // handle response
 }];
 ```
 
@@ -27,9 +27,9 @@ ASJImageItem *imageItem = [ASJImageItem imageItemWithName:@"image_name" fileName
 
 ASJNetworking *postRequest = [[ASJNetworking alloc] initWithBaseUrl:@"http://example.com"];
 [postRequest POST:@"method_name" parameters:params imageItems:@[anImageItem] progress:^(CGFloat progressPc) {
-// handle progress
+  // handle progress
 } completion:^(id response, NSString *responseString, NSError *error) {
-// handle response
+  // handle response
 }];
 ```
 

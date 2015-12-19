@@ -50,7 +50,7 @@ Cocoapods is the preferred way to install this library. Add this command to your
 pod 'ASJNetworking'
 ```
 
-If you prefer the classic way, just copy the ASJNetworking folder (.h,.m files) to your project.
+If you prefer the classic way, just copy the ASJNetworking folder (.h and .m files) to your project.
 
 # Thanks
 

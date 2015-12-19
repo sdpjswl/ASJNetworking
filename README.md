@@ -42,6 +42,16 @@ ASJNetworking *postRequest = [[ASJNetworking alloc] initWithBaseUrl:@"http://exa
 - Check how to send parameters in the header
 - How to make categories to set image on image view etc.
 
+# Installation
+
+Cocoapods is the preferred way to install this library. Add this command to your `Podfile`:
+
+```
+pod 'ASJNetworking'
+```
+
+If you prefer the classic way, just copy the ASJNetworking folder (.h,.m files) to your project.
+
 # Thanks
 
 - To the creators of [AFNetworking](https://github.com/AFNetworking/AFNetworking)

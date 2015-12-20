@@ -11,6 +11,18 @@ ASJNetworking can make these kinds of HTTP requests:
 * PATCH
 * DELETE
 
+# Installation
+
+Cocoapods is the preferred way to install this library. Add this command to your `Podfile`:
+
+```
+pod 'ASJNetworking'
+```
+
+If you prefer the classic way, just copy the ASJNetworking folder (.h and .m files) to your project.
+
+# Usage
+
 Making requests is simple. You will first need to create an instance of `ASJNetworking` then call the appropriate method of the request you wish to make. There are methods provided for all kinds of HTTP requests. For example, if you wish to make a GET request: 
 
 ```objc
@@ -41,16 +53,6 @@ ASJNetworking *postRequest = [[ASJNetworking alloc] initWithBaseUrl:@"http://exa
 - ~~Add multipart to PUT request~~
 - Check how to send parameters in the header
 - How to make categories to set image on image view etc.
-
-# Installation
-
-Cocoapods is the preferred way to install this library. Add this command to your `Podfile`:
-
-```
-pod 'ASJNetworking'
-```
-
-If you prefer the classic way, just copy the ASJNetworking folder (.h and .m files) to your project.
 
 # Thanks
 

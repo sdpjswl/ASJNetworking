@@ -46,8 +46,8 @@
 
 - (void)runRequestWithHTTPMethod:(NSString *)httpMethod;
 - (void)runMultipartRequestWithHTTPMethod:(NSString *)httpMethod;
-- (void)handleHEADRequestForResponse:(NSURLResponse *)response;
-- (void)parseUrlResponse;
+- (void)parseUrlResponseForTask:(NSURLSessionTask *)task;
+- (NSData *)headerDataForHEADRequestTask:(NSURLSessionTask *)task;
 
 @end
 
@@ -190,68 +190,7 @@
   [uploadTask resume];
 }
 
-#pragma mark - Parsing
-
-- (void)parseUrlResponse
-{
-  if (!_callback) {
-    self.showNetworkActivityIndicator = NO;
-    return;
-  }
-  
-  // fix duplication of data
-  NSData *data = [NSData dataWithData:_responseData];
-  _responseData = [[NSMutableData alloc] init];
-  
-  NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-  if (!data) {
-    _callback(data, responseString, _responseError);
-    self.showNetworkActivityIndicator = NO;
-    return;
-  }
-  
-  NSError *parseError = nil;
-  id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-  if (_callback) {
-    _callback(json, responseString, _responseError);
-    self.showNetworkActivityIndicator = NO;
-  }
-}
-
 #pragma mark - NSURLSessionDataDelegate
-
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
-{
-  BOOL isHEADRequest = [dataTask.originalRequest.HTTPMethod isEqualToString:@"HEAD"];
-  if (isHEADRequest)
-  {
-    [self handleHEADRequestForResponse:response];
-    return;
-  }
-  completionHandler(NSURLSessionResponseAllow);
-}
-
-- (void)handleHEADRequestForResponse:(NSURLResponse *)response
-{
-  if (!_callback) {
-    self.showNetworkActivityIndicator = NO;
-    return;
-  }
-  
-  NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
-  NSError *error = nil;
-  NSData *data = [NSJSONSerialization dataWithJSONObject:headers options:NSJSONWritingPrettyPrinted error:&error];
-  if (error)
-  {
-    _callback(headers, nil, error);
-    self.showNetworkActivityIndicator = NO;
-    return;
-  }
-  NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-  _callback(headers, jsonString, nil);
-  self.showNetworkActivityIndicator = NO;
-  return;
-}
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
@@ -273,14 +212,58 @@
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
   _responseError = error;
-  [self parseUrlResponse];
+  [self parseUrlResponseForTask:task];
+}
+
+#pragma mark - Parsing
+
+- (void)parseUrlResponseForTask:(NSURLSessionTask *)task
+{
+  if (!_callback) {
+    self.showNetworkActivityIndicator = NO;
+    return;
+  }
+  
+  // fix duplication of data
+  NSData *data = [NSData dataWithData:_responseData];
+  _responseData = [[NSMutableData alloc] init];
+  
+  // might be HEAD
+  if (!data.length)
+  {
+    BOOL isHEADRequest = [task.originalRequest.HTTPMethod isEqualToString:@"HEAD"];
+    if (isHEADRequest)
+    {
+      data = [self headerDataForHEADRequestTask:task];
+    }
+  }
+  
+  NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+  if (!data) {
+    _callback(data, responseString, _responseError);
+    self.showNetworkActivityIndicator = NO;
+    return;
+  }
+  
+  NSError *parseError = nil;
+  id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+  if (_callback) {
+    _callback(json, responseString, _responseError);
+    self.showNetworkActivityIndicator = NO;
+  }
+}
+
+- (NSData *)headerDataForHEADRequestTask:(NSURLSessionTask *)task
+{
+  NSDictionary *headers = [(NSHTTPURLResponse *)task.response allHeaderFields];
+  return [NSJSONSerialization dataWithJSONObject:headers options:NSJSONWritingPrettyPrinted error:nil];
 }
 
 #pragma mark - NSURLSessionDelegate
 
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
- completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler {
-  
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
+{
   // using a self signed SSL certificate casues requests to fail
   completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
 }

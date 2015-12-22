@@ -53,7 +53,12 @@
 
 @implementation ASJNetworking
 
-#pragma mark - Init
+#pragma mark - Initializers
+
+- (instancetype)init
+{
+  return [self initWithBaseUrl:nil];
+}
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
 {

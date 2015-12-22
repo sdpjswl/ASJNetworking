@@ -29,38 +29,140 @@ typedef void (^RequestBlock)();
 
 @interface ASJNetworking : NSObject
 
+/**
+ *  The time interval in seconds after which the request times out
+ */
 @property (assign, nonatomic) CGFloat timeoutInterval;
 
-- (instancetype)initWithBaseUrl:(NSString *)baseUrl;
+/**
+ *  The designated initializer for this class
+ *
+ *  @param baseUrl Pass the base url for the request you wish to make
+ *
+ *  @return Returns an instance of the class
+ */
+- (instancetype)initWithBaseUrl:(NSString *)baseUrl NS_DESIGNATED_INITIALIZER;
 
+/**
+ *  Executes a GET request. Used to fetch data from the server.
+ *
+ *  @param methodName Method name for the request, after the '/'
+ *  @param parameters Attach any parameters for the request
+ *  @param completion A block that is executed when the request is completed, successfully or otherwise
+ */
 - (void)GET:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
+/**
+ *  Executes a HEAD request. This is almost like a GET request, except that it does not return the response body, only the headers.
+ *
+ *  @param methodName Method name for the request, after the '/'
+ *  @param parameters Attach any parameters for the request
+ *  @param completion A block that is executed when the request is completed, successfully or otherwise. This request has been modified to return the response headers in the response object.
+ */
 - (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
+/**
+ *  Executes a POST request. Used to send new data to the server.
+ *
+ *  @param methodName Method name for the request, after the '/'
+ *  @param parameters Attach any parameters for the request
+ *  @param completion A block that is executed when the request is completed, successfully or otherwise
+ */
 - (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
+/**
+ *  Executes a multipart POST request. Used to send new data to the server.
+ *
+ *  @param methodName Method name for the request, after the '/'
+ *  @param parameters Attach any parameters for the request
+ *  @param imageItems Attach image items of type 'ASJImageItem'
+ *  @param completion A block that is executed when the request is completed, successfully or otherwise
+ */
 - (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(CompletionBlock)completion;
 
+/**
+ *  Executes a multipart POST request. Used to send new data to the server.
+ *
+ *  @param methodName Method name for the request, after the '/'
+ *  @param parameters Attach any parameters for the request
+ *  @param imageItems Attach image items of type 'ASJImageItem'
+ *  @param progress   A progress block that is continuously invoked. It provides the percentage of the request completed.
+ *  @param completion A block that is executed when the request is completed, successfully or otherwise
+ */
 - (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ProgressBlock)progress completion:(CompletionBlock)completion;
 
+/**
+ *  Executes a PUT request. Used to send update existing data on the server.
+ *
+ *  @param methodName Method name for the request, after the '/'
+ *  @param parameters Attach any parameters for the request
+ *  @param completion A block that is executed when the request is completed, successfully or otherwise
+ */
 - (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
+/**
+ *  Executes a multipart PUT request. Used to update existing data on the server.
+ *
+ *  @param methodName Method name for the request, after the '/'
+ *  @param parameters Attach any parameters for the request
+ *  @param imageItems Attach image items of type 'ASJImageItem'
+ *  @param completion A block that is executed when the request is completed, successfully or otherwise
+ */
 - (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(CompletionBlock)completion;
 
+/**
+ *  Executes a multipart PUT request. Used to update existing data on the server.
+ *
+ *  @param methodName Method name for the request, after the '/'
+ *  @param parameters Attach any parameters for the request
+ *  @param imageItems Attach image items of type 'ASJImageItem'
+ *  @param progress   A progress block that is continuously invoked. It provides the percentage of the request completed.
+ *  @param completion A block that is executed when the request is completed, successfully or otherwise
+ */
 - (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ProgressBlock)progress completion:(CompletionBlock)completion;
 
+/**
+ *  Executes a PATCH request. Used to partially update existing data on the server.
+ *
+ *  @param methodName Method name for the request, after the '/'
+ *  @param parameters Attach any parameters for the request
+ *  @param completion A block that is executed when the request is completed, successfully or otherwise
+ */
 - (void)PATCH:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
+/**
+ *  Executes a DELETE request. Used to delete resources existing on the server.
+ *
+ *  @param methodName Method name for the request, after the '/'
+ *  @param parameters Attach any parameters for the request
+ *  @param completion A block that is executed when the request is completed, successfully or otherwise
+ */
 - (void)DELETE:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
 @end
 
 @interface ASJImageItem : NSObject
 
+/**
+ *  Field name of the image in the body
+ */
 @property (copy, nonatomic) NSString *name;
+
+/**
+ *  Filename to be given to the image
+ */
 @property (copy, nonatomic) NSString *filename;
+
+/**
+ *  The image to be sent itself
+ */
 @property (weak, nonatomic) UIImage *image;
 
+/**
+ *  A handy constructor to quickly create ASJImageItems
+ *
+ *  @return An instance of the class
+ */
 + (ASJImageItem *)imageItemWithName:(NSString *)name fileName:(NSString *)filename image:(UIImage *)image;
 
 @end

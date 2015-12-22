@@ -99,7 +99,10 @@
 
 - (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
-  [self POST:methodName parameters:parameters imageItems:nil completion:completion];
+  _methodName = methodName;
+  _parameters = parameters;
+  _callback = completion;
+  [self runRequestWithHTTPMethod:@"POST"];
 }
 
 - (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(CompletionBlock)completion

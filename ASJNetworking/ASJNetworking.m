@@ -42,6 +42,7 @@
 @property (copy, nonatomic) NSMutableData *responseData;
 @property (copy, nonatomic) NSString *responseString;
 @property (strong, nonatomic) NSError *responseError;
+@property (strong, nonatomic) NSURLSessionTask *activeTask;
 @property (assign, nonatomic) BOOL showNetworkActivityIndicator;
 
 - (void)runRequestWithHTTPMethod:(NSString *)httpMethod;
@@ -80,6 +81,7 @@
   _callback = completion;
   
   NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.getRequestUrl];
+  _activeTask = task;
   self.showNetworkActivityIndicator = YES;
   [task resume];
 }
@@ -96,6 +98,7 @@
   request.HTTPMethod = @"HEAD";
   
   NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request];
+  _activeTask = task;
   self.showNetworkActivityIndicator = YES;
   [task resume];
 }
@@ -181,6 +184,7 @@
   [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
   
   NSURLSessionDataTask *postDataTask = [self.urlSession dataTaskWithRequest:request];
+  _activeTask = postDataTask;
   self.showNetworkActivityIndicator = YES;
   [postDataTask resume];
 }
@@ -194,6 +198,7 @@
   [request addValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.boundary] forHTTPHeaderField:@"Content-Type"];
   
   NSURLSessionDataTask *uploadTask = [self.urlSession dataTaskWithRequest:request];
+  _activeTask = uploadTask;
   self.showNetworkActivityIndicator = YES;
   [uploadTask resume];
 }
@@ -409,6 +414,16 @@
     }
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
   }
+}
+
+#pragma mark - Cancel
+
+- (void)cancelActiveRequest
+{
+  if (!_activeTask) {
+    return;
+  }
+  [_activeTask cancel];
 }
 
 @end

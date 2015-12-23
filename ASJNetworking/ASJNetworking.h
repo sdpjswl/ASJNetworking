@@ -139,6 +139,12 @@ typedef void (^RequestBlock)();
  */
 - (void)DELETE:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
 
+
+/**
+ *  Stops the currently active request
+ */
+- (void)cancelActiveRequest;
+
 @end
 
 @interface ASJImageItem : NSObject

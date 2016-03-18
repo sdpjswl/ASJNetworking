@@ -22,6 +22,8 @@
 
 #import "ASJNetworking.h"
 
+static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
+
 @interface ASJNetworking () <NSURLSessionDataDelegate>
 
 @property (copy, nonatomic) NSString *baseUrl;
@@ -47,7 +49,8 @@
 
 - (void)runRequestWithHTTPMethod:(NSString *)httpMethod;
 - (void)runMultipartRequestWithHTTPMethod:(NSString *)httpMethod;
-- (void)parseUrlResponseForTask:(NSURLSessionTask *)task;
+- (void)validateTask;
+- (void)parseUrlResponseForTask;
 - (NSData *)headerDataForHEADRequestTask:(NSURLSessionTask *)task;
 
 @end
@@ -225,12 +228,43 @@
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
   _responseError = error;
-  [self parseUrlResponseForTask:task];
+  [self validateTask];
+  [self parseUrlResponseForTask];
+}
+
+#pragma mark - Error checking
+
+- (void)validateTask
+{
+  NSInteger httpStatusCode = (long)[(NSHTTPURLResponse *)_activeTask.response statusCode];
+  BOOL success = (httpStatusCode >= 200 && httpStatusCode < 300) ? YES : NO;
+  
+  // codes 200-299 signify successful request
+  if (success) {
+    return;
+  }
+  
+  NSInteger errorCode = _responseError.code;
+  NSError *error = nil;
+  
+  // sometimes error is nil and http status code is present
+  if (errorCode == 0 && !success)
+  {
+    NSString *errorMessage = [NSString stringWithFormat:@"Request failed: %@", [NSHTTPURLResponse localizedStringForStatusCode:httpStatusCode]];
+    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: errorMessage};
+    error = [NSError errorWithDomain:kErrorDomain code:httpStatusCode userInfo:userInfo];
+  }
+  else
+  {
+    error = [NSError errorWithDomain:kErrorDomain code:errorCode userInfo:_responseError.userInfo];
+  }
+  
+  _responseError = error;
 }
 
 #pragma mark - Parsing
 
-- (void)parseUrlResponseForTask:(NSURLSessionTask *)task
+- (void)parseUrlResponseForTask
 {
   if (!_callback) {
     self.showNetworkActivityIndicator = NO;
@@ -244,10 +278,10 @@
   // might be HEAD
   if (!data.length)
   {
-    BOOL isHEADRequest = [task.originalRequest.HTTPMethod isEqualToString:@"HEAD"];
+    BOOL isHEADRequest = [_activeTask.originalRequest.HTTPMethod isEqualToString:@"HEAD"];
     if (isHEADRequest)
     {
-      data = [self headerDataForHEADRequestTask:task];
+      data = [self headerDataForHEADRequestTask:_activeTask];
     }
   }
   

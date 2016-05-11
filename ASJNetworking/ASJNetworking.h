@@ -23,6 +23,10 @@
 @import Foundation;
 @import UIKit;
 
+@class ASJImageItem;
+
+NS_ASSUME_NONNULL_BEGIN
+
 typedef void (^CompletionBlock)(id response, NSString *responseString, NSError *error);
 typedef void (^ProgressBlock)(CGFloat progressPc);
 typedef void (^RequestBlock)();
@@ -44,13 +48,18 @@ typedef void (^RequestBlock)();
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl NS_DESIGNATED_INITIALIZER;
 
 /**
+ *  Don't allow init because a baseUrl is must.
+ */
+- (instancetype)init NS_UNAVAILABLE;
+
+/**
  *  Executes a GET request. Used to fetch data from the server.
  *
  *  @param methodName Method name for the request, after the '/'
  *  @param parameters Attach any parameters for the request
  *  @param completion A block that is executed when the request is completed, successfully or otherwise
  */
-- (void)GET:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
+- (void)GET:(nullable NSString *)methodName parameters:(nullable NSDictionary *)parameters completion:(nullable CompletionBlock)completion;
 
 /**
  *  Executes a HEAD request. This is almost like a GET request, except that it does not return the response body, only the headers.
@@ -59,7 +68,7 @@ typedef void (^RequestBlock)();
  *  @param parameters Attach any parameters for the request
  *  @param completion A block that is executed when the request is completed, successfully or otherwise. This request has been modified to return the response headers in the response object.
  */
-- (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
+- (void)HEAD:(nullable NSString *)methodName parameters:(nullable NSDictionary *)parameters completion:(nullable CompletionBlock)completion;
 
 /**
  *  Executes a POST request. Used to send new data to the server.
@@ -68,7 +77,7 @@ typedef void (^RequestBlock)();
  *  @param parameters Attach any parameters for the request
  *  @param completion A block that is executed when the request is completed, successfully or otherwise
  */
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
+- (void)POST:(nullable NSString *)methodName parameters:(nullable NSDictionary *)parameters completion:(nullable CompletionBlock)completion;
 
 /**
  *  Executes a multipart POST request. Used to send new data to the server.
@@ -78,7 +87,7 @@ typedef void (^RequestBlock)();
  *  @param imageItems Attach image items of type 'ASJImageItem'
  *  @param completion A block that is executed when the request is completed, successfully or otherwise
  */
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(CompletionBlock)completion;
+- (void)POST:(nullable NSString *)methodName parameters:(nullable NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems completion:(nullable CompletionBlock)completion;
 
 /**
  *  Executes a multipart POST request. Used to send new data to the server.
@@ -89,7 +98,7 @@ typedef void (^RequestBlock)();
  *  @param progress   A progress block that is continuously invoked. It provides the percentage of the request completed.
  *  @param completion A block that is executed when the request is completed, successfully or otherwise
  */
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ProgressBlock)progress completion:(CompletionBlock)completion;
+- (void)POST:(nullable NSString *)methodName parameters:(nullable NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems progress:(nullable ProgressBlock)progress completion:(nullable CompletionBlock)completion;
 
 /**
  *  Executes a PUT request. Used to send update existing data on the server.
@@ -98,7 +107,7 @@ typedef void (^RequestBlock)();
  *  @param parameters Attach any parameters for the request
  *  @param completion A block that is executed when the request is completed, successfully or otherwise
  */
-- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
+- (void)PUT:(nullable NSString *)methodName parameters:(nullable NSDictionary *)parameters completion:(nullable CompletionBlock)completion;
 
 /**
  *  Executes a multipart PUT request. Used to update existing data on the server.
@@ -108,7 +117,7 @@ typedef void (^RequestBlock)();
  *  @param imageItems Attach image items of type 'ASJImageItem'
  *  @param completion A block that is executed when the request is completed, successfully or otherwise
  */
-- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(CompletionBlock)completion;
+- (void)PUT:(nullable NSString *)methodName parameters:(nullable NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems completion:(nullable CompletionBlock)completion;
 
 /**
  *  Executes a multipart PUT request. Used to update existing data on the server.
@@ -119,7 +128,7 @@ typedef void (^RequestBlock)();
  *  @param progress   A progress block that is continuously invoked. It provides the percentage of the request completed.
  *  @param completion A block that is executed when the request is completed, successfully or otherwise
  */
-- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ProgressBlock)progress completion:(CompletionBlock)completion;
+- (void)PUT:(nullable NSString *)methodName parameters:(nullable NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems progress:(nullable ProgressBlock)progress completion:(nullable CompletionBlock)completion;
 
 /**
  *  Executes a PATCH request. Used to partially update existing data on the server.
@@ -128,7 +137,7 @@ typedef void (^RequestBlock)();
  *  @param parameters Attach any parameters for the request
  *  @param completion A block that is executed when the request is completed, successfully or otherwise
  */
-- (void)PATCH:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
+- (void)PATCH:(nullable NSString *)methodName parameters:(nullable NSDictionary *)parameters completion:(nullable CompletionBlock)completion;
 
 /**
  *  Executes a DELETE request. Used to delete resources existing on the server.
@@ -137,8 +146,7 @@ typedef void (^RequestBlock)();
  *  @param parameters Attach any parameters for the request
  *  @param completion A block that is executed when the request is completed, successfully or otherwise
  */
-- (void)DELETE:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion;
-
+- (void)DELETE:(nullable NSString *)methodName parameters:(nullable NSDictionary *)parameters completion:(nullable CompletionBlock)completion;
 
 /**
  *  Stops the currently active request
@@ -162,7 +170,7 @@ typedef void (^RequestBlock)();
 /**
  *  The image to be sent itself
  */
-@property (weak, nonatomic) UIImage *image;
+@property (strong, nonatomic) UIImage *image;
 
 /**
  *  A handy constructor to quickly create ASJImageItems
@@ -172,3 +180,5 @@ typedef void (^RequestBlock)();
 + (ASJImageItem *)imageItemWithName:(NSString *)name fileName:(NSString *)filename image:(UIImage *)image;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -59,13 +59,9 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 
 #pragma mark - Initializers
 
-- (instancetype)init
-{
-  return [self initWithBaseUrl:nil];
-}
-
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
 {
+  NSAssert(baseUrl.length, @"You must specify a base url.");
   self = [super init];
   if (self) {
     _baseUrl = baseUrl;
@@ -116,12 +112,12 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
   [self runRequestWithHTTPMethod:@"POST"];
 }
 
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(CompletionBlock)completion
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems completion:(nullable CompletionBlock)completion
 {
   [self POST:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
 }
 
-- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ProgressBlock)progress completion:(CompletionBlock)completion
+- (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems progress:(nullable ProgressBlock)progress completion:(nullable CompletionBlock)completion
 {
   _methodName = methodName;
   _parameters = parameters;
@@ -141,12 +137,12 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
   [self runRequestWithHTTPMethod:@"PUT"];
 }
 
-- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems completion:(CompletionBlock)completion
+- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems completion:(nullable CompletionBlock)completion
 {
   [self PUT:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
 }
 
-- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(NSArray *)imageItems progress:(ProgressBlock)progress completion:(CompletionBlock)completion
+- (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems progress:(nullable ProgressBlock)progress completion:(nullable CompletionBlock)completion
 {
   _methodName = methodName;
   _parameters = parameters;
@@ -352,24 +348,21 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
     }
     
     ASJImageItem *imageItemObject = (ASJImageItem *)imageItem;
-    BOOL nilCheck = (imageItemObject.name && imageItemObject.filename && imageItemObject.image);
+    BOOL nilCheck = (imageItemObject.name.length && imageItemObject.filename.length && imageItemObject.image);
     if (!nilCheck) {
       NSAssert(nilCheck, @"ASJImageItem properties name, filename and image must not be nil");
     }
-  }
-  
-  // attach images
-  for (ASJImageItem *imageItem in _imageItems)
-  {
-    NSData *imageData = UIImageJPEGRepresentation(imageItem.image, 0.6);
-    if (imageData) {
+    
+    NSData *imageData = UIImageJPEGRepresentation(imageItemObject.image, 0.6);
+    if (imageData.length) {
       [body appendData:[[NSString stringWithFormat:@"--%@\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-      [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", imageItem.name, imageItem.filename] dataUsingEncoding:NSUTF8StringEncoding]];
+      [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", imageItemObject.name, imageItemObject.filename] dataUsingEncoding:NSUTF8StringEncoding]];
       [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
       [body appendData:imageData];
       [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
     }
   }
+  
   [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
   return [NSData dataWithData:body];
 }

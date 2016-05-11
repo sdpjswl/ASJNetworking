@@ -1,9 +1,9 @@
 ASJNetworking
 =============
 
-Ever since getting the hang of making network requests and playing with JSON, it always felt cumbersome to me to deal with the code required to make them, especially POST requests. I found code samples online but could never settle upon anything, alternating between make spaghetti of my code by pasting code samples everywhere or using a third party solution. I wanted consistency for myself and I created this basic networking class built upon NSURLSession that fills all my simple needs.
+Ever since getting the hang of making network requests and playing with JSON, it always felt cumbersome to me to deal with the code required to make them, especially POST requests. I found code samples online but could never settle upon anything, alternating between make spaghetti of my code by pasting code samples everywhere or using a third party solution. I wanted consistency for myself and I created this basic networking class built upon `NSURLSession` that fills all my simple needs.
 
-ASJNetworking can make these kinds of HTTP requests:
+`ASJNetworking` can make these kinds of HTTP requests:
 * GET
 * HEAD
 * POST
@@ -13,13 +13,13 @@ ASJNetworking can make these kinds of HTTP requests:
 
 # Installation
 
-Cocoapods is the preferred way to install this library. Add this command to your `Podfile`:
+CocoaPods is the preferred way to install this library. Add this command to your `Podfile`:
 
 ```
 pod 'ASJNetworking'
 ```
 
-If you prefer the classic way, just copy the ASJNetworking folder (.h and .m files) to your project.
+If you prefer the classic way, just copy the `ASJNetworking` folder (.h and .m files) to your project.
 
 # Usage
 
@@ -62,4 +62,4 @@ ASJNetworking *postRequest = [[ASJNetworking alloc] initWithBaseUrl:@"http://exa
 
 # License
 
-ASJNetworking is available under the MIT license. See the LICENSE file for more info.
+`ASJNetworking` is available under the MIT license. See the LICENSE file for more info.

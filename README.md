@@ -1,5 +1,4 @@
-ASJNetworking
-=============
+# ASJNetworking
 
 Ever since getting the hang of making network requests and playing with JSON, it always felt cumbersome to me to deal with the code required to make them, especially POST requests. I found code samples online but could never settle upon anything, alternating between make spaghetti of my code by pasting code samples everywhere or using a third party solution. I wanted consistency for myself and I created this basic networking class built upon `NSURLSession` that fills all my simple needs.
 
@@ -54,7 +53,7 @@ ASJNetworking *postRequest = [[ASJNetworking alloc] initWithBaseUrl:@"http://exa
 - Check how to send parameters in the header
 - How to make categories to set image on image view etc.
 
-# Thanks
+# Credits
 
 - To the creators of [AFNetworking](https://github.com/AFNetworking/AFNetworking)
 - To this [Stack Overflow question](http://stackoverflow.com/questions/19099448/send-post-request-using-nsurlsession)

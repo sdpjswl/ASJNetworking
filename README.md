@@ -1,6 +1,6 @@
 # ASJNetworking
 
-Ever since getting the hang of making network requests and playing with JSON, it always felt cumbersome to me to deal with the code required to make them, especially POST requests. I found code samples online but could never settle upon anything, alternating between make spaghetti of my code by pasting code samples everywhere or using a third party solution. I wanted consistency for myself and I created this basic networking class built upon `NSURLSession` that fills all my simple needs.
+Ever since getting the hang of making network requests and playing with JSON, it always felt cumbersome to me to deal with the code required to make them, especially POST requests. I found code samples online but could never settle upon anything, alternating between making spaghetti of my code by pasting code samples everywhere or using a third party solution. I wanted consistency for myself and I created this basic networking class built upon `NSURLSession` that fills all my simple needs.
 
 `ASJNetworking` can make these kinds of HTTP requests:
 * GET

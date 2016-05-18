@@ -66,7 +66,7 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
   self = [super init];
   if (self) {
     _baseUrl = baseUrl;
-    _timeoutInterval = 30.0;
+    _timeoutInterval = 30.0f;
     _responseData = [[NSMutableData alloc] init];
   }
   return self;
@@ -428,30 +428,19 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 - (void)setShowNetworkActivityIndicator:(BOOL)showNetworkActivityIndicator
 {
   BOOL isVisible = [UIApplication sharedApplication].isNetworkActivityIndicatorVisible;
-  if (showNetworkActivityIndicator)
-  {
-    if (isVisible) {
-      return;
-    }
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+  if (showNetworkActivityIndicator && isVisible) {
+    return;
   }
-  else
-  {
-    if (!isVisible) {
-      return;
-    }
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-  }
+  [UIApplication sharedApplication].networkActivityIndicatorVisible = showNetworkActivityIndicator;
 }
 
 #pragma mark - Cancel
 
 - (void)cancelActiveRequest
 {
-  if (!_activeTask) {
-    return;
+  if (_activeTask) {
+    [_activeTask cancel];
   }
-  [_activeTask cancel];
 }
 
 @end

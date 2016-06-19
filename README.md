@@ -14,7 +14,7 @@ Ever since getting the hang of making network requests and playing with JSON, it
 
 CocoaPods is the preferred way to install this library. Add this command to your `Podfile`:
 
-```
+```ruby
 pod 'ASJNetworking'
 ```
 
@@ -46,19 +46,19 @@ ASJNetworking *postRequest = [[ASJNetworking alloc] initWithBaseUrl:@"http://exa
 
 # To-do
 
-- ~~Test DELETE request~~
-- ~~Test HEAD request~~
-- ~~Check for nil values in image items~~
-- ~~Add network activity indicator support~~
-- ~~Add multipart to PUT request~~
-- Check how to send parameters in the header
+- ~~Test DELETE request.~~
+- ~~Test HEAD request.~~
+- ~~Check for nil values in image items.~~
+- ~~Add network activity indicator support.~~
+- ~~Add multipart to PUT request.~~
+- Check how to send parameters in the header.
 - How to make categories to set image on image view etc.
 
 # Credits
 
-- To the creators of [AFNetworking](https://github.com/AFNetworking/AFNetworking)
-- To this [Stack Overflow question](http://stackoverflow.com/questions/19099448/send-post-request-using-nsurlsession)
-- To [Abhijit Kayande](https://github.com/Abhijit-Kayande) for *Ctrl+Cmd+Spc*
+- To the creators of [AFNetworking](https://github.com/AFNetworking/AFNetworking).
+- To this [Stack Overflow question](http://stackoverflow.com/questions/19099448/send-post-request-using-nsurlsession).
+- To [Abhijit Kayande](https://github.com/Abhijit-Kayande) for *Ctrl+Cmd+Spc*.
 
 # License
 

@@ -53,6 +53,7 @@ ASJNetworking *postRequest = [[ASJNetworking alloc] initWithBaseUrl:@"http://exa
 - ~~Add multipart to PUT request.~~
 - Check how to send parameters in the header.
 - How to make categories to set image on image view etc.
+- Ability to make batch requests.
 
 # Credits
 

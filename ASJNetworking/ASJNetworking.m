@@ -382,14 +382,16 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
     return requestUrl;
   }
   
-  __block NSMutableString *tempString = [[NSMutableString alloc] initWithString:requestUrl.absoluteString];
-  [tempString appendString:@"?"];
+  NSMutableArray *queryItems = NSMutableArray.new;
+  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *name, NSString *value, BOOL *stop)
+   {
+     NSURLQueryItem *item = [NSURLQueryItem queryItemWithName:name value:[value stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLQueryAllowedCharacterSet]];
+     [queryItems addObject:item];
+   }];
   
-  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop) {
-    [tempString appendFormat:@"%@=%@&", key, obj];
-  }];
-  NSString *withParameters = [tempString substringWithRange:NSMakeRange(0, tempString.length - 1)];
-  return [NSURL URLWithString:withParameters];
+  NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:requestUrl resolvingAgainstBaseURL:NO];
+  urlComponents.queryItems = queryItems;
+  return urlComponents.URL;
 }
 
 - (NSURL *)requestUrl

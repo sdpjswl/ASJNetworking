@@ -51,15 +51,16 @@ ASJNetworking *postRequest = [[ASJNetworking alloc] initWithBaseUrl:@"http://exa
 - ~~Check for nil values in image items.~~
 - ~~Add network activity indicator support.~~
 - ~~Add multipart to PUT request.~~
-- Check how to send parameters in the header.
+- How to send parameters in the header.
 - How to make categories to set image on image view etc.
 - Ability to make batch requests.
 
 # Credits
 
-- To the creators of [AFNetworking](https://github.com/AFNetworking/AFNetworking).
-- To this [Stack Overflow question](http://stackoverflow.com/questions/19099448/send-post-request-using-nsurlsession).
-- To [Abhijit Kayande](https://github.com/Abhijit-Kayande) for *Ctrl+Cmd+Spc*.
+- [AFNetworking](https://github.com/AFNetworking/AFNetworking) and its contributors.
+- [Abhijit Kayande](https://github.com/Abhijit-Kayande) for *Ctrl+Cmd+Spc*.
+- [Send POST request using NSURLSession](http://stackoverflow.com/a/19101084).
+- [Is there any way to attach a NSDictionary of parameters to an NSURLRequest instead of manually making a string?](http://stackoverflow.com/a/32638248)
 
 # License
 

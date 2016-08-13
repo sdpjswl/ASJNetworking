@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.0](https://github.com/sudeepjaiswal/ASJNetworking/releases/tag/1.0)
+Released on Saturday, 13 Aug, 2016.
+
+#### Fixed
+* Fixed POST method to use `application/x-www-form-urlencoded`.
+
 ## [0.2](https://github.com/sudeepjaiswal/ASJNetworking/releases/tag/0.2)
 Released on Wednesday, 18 May, 2016.
 

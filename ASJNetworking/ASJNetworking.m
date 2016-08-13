@@ -34,6 +34,7 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 @property (copy, nonatomic) CompletionBlock callback;
 @property (copy) ProgressBlock progress;
 
+@property (readonly, copy, nonatomic) NSData *postHTTPBody;
 @property (readonly, copy, nonatomic) NSData *multipartHTTPBody;
 @property (readonly, copy, nonatomic) NSString *boundary;
 
@@ -176,8 +177,9 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 
 - (void)runRequestWithHTTPMethod:(NSString *)httpMethod
 {
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.formEncodedURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
+  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
   request.HTTPMethod = httpMethod;
+  request.HTTPBody = self.postHTTPBody;
   [request addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
   
   NSURLSessionDataTask *postDataTask = [self.urlSession dataTaskWithRequest:request];
@@ -310,6 +312,18 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 }
 
 #pragma mark - HTTP body
+
+- (NSData *)postHTTPBody
+{
+  NSMutableString *temp = [[NSMutableString alloc] init];
+  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop)
+  {
+    [temp appendFormat:@"%@=%@&", key, obj];
+  }];
+  
+  NSString *string = [temp stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  return [string dataUsingEncoding:NSUTF8StringEncoding];
+}
 
 - (NSData *)multipartHTTPBody
 {

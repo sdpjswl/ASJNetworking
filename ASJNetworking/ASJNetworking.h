@@ -54,6 +54,11 @@ typedef void (^RequestBlock)();
 - (instancetype)init NS_UNAVAILABLE;
 
 /**
+ *  Authenticate the request. The username and password will be converted to a base 64 string and added to the HTTP request's header.
+ */
+- (void)setUsername:(NSString *)username password:(NSString *)password;
+
+/**
  *  Executes a GET request. Used to fetch data from the server.
  *
  *  @param methodName Method name for the request, after the '/'

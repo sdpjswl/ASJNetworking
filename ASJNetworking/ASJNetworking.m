@@ -44,6 +44,8 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 
 @property (copy, nonatomic) NSMutableData *responseData;
 @property (copy, nonatomic) NSString *responseString;
+@property (copy, nonatomic) NSString *authorization;
+@property (strong, nonatomic) NSMutableURLRequest *urlRequest;
 @property (strong, nonatomic) NSError *responseError;
 @property (strong, nonatomic) NSURLSessionTask *activeTask;
 @property (assign, nonatomic) BOOL showNetworkActivityIndicator;
@@ -58,7 +60,7 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 
 @implementation ASJNetworking
 
-#pragma mark - Initializers
+#pragma mark - Setup
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
 {
@@ -72,6 +74,14 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
   return self;
 }
 
+// Thanks: SVHTTPRequest
+- (void)setUsername:(NSString *)username password:(NSString *)password
+{
+  NSString *auth = [NSString stringWithFormat:@"%@:%@", username, password];
+  NSData *data = [auth dataUsingEncoding:NSASCIIStringEncoding];
+  _authorization = [NSString stringWithFormat:@"Basic %@", [data base64EncodedStringWithOptions:0]];
+}
+
 #pragma mark - GET
 
 - (void)GET:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
@@ -80,7 +90,14 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
   _parameters = parameters;
   _callback = completion;
   
-  NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.formEncodedURL];
+  _urlRequest = [[NSMutableURLRequest alloc] initWithURL:self.formEncodedURL];
+  _urlRequest.HTTPMethod = @"GET";
+  
+  if (_authorization) {
+    [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
+  }
+  
+  NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:_urlRequest];
   _activeTask = task;
   self.showNetworkActivityIndicator = YES;
   [task resume];
@@ -94,10 +111,14 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
   _parameters = parameters;
   _callback = completion;
   
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:self.formEncodedURL];
-  request.HTTPMethod = @"HEAD";
+  _urlRequest = [[NSMutableURLRequest alloc] initWithURL:self.formEncodedURL];
+  _urlRequest.HTTPMethod = @"HEAD";
   
-  NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:request];
+  if (_authorization) {
+    [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
+  }
+  
+  NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:_urlRequest];
   _activeTask = task;
   self.showNetworkActivityIndicator = YES;
   [task resume];
@@ -177,12 +198,16 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 
 - (void)runRequestWithHTTPMethod:(NSString *)httpMethod
 {
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
-  request.HTTPMethod = httpMethod;
-  request.HTTPBody = self.postHTTPBody;
-  [request addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+  _urlRequest = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
+  _urlRequest.HTTPMethod = httpMethod;
+  _urlRequest.HTTPBody = self.postHTTPBody;
+  [_urlRequest addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
   
-  NSURLSessionDataTask *postDataTask = [self.urlSession dataTaskWithRequest:request];
+  if (_authorization) {
+    [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
+  }
+  
+  NSURLSessionDataTask *postDataTask = [self.urlSession dataTaskWithRequest:_urlRequest];
   _activeTask = postDataTask;
   self.showNetworkActivityIndicator = YES;
   [postDataTask resume];
@@ -190,13 +215,17 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 
 - (void)runMultipartRequestWithHTTPMethod:(NSString *)httpMethod
 {
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
-  request.HTTPMethod = httpMethod;
-  request.HTTPBody = self.multipartHTTPBody;
-  [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-  [request addValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.boundary] forHTTPHeaderField:@"Content-Type"];
+  _urlRequest = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
+  _urlRequest.HTTPMethod = httpMethod;
+  _urlRequest.HTTPBody = self.multipartHTTPBody;
+  [_urlRequest addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+  [_urlRequest addValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.boundary] forHTTPHeaderField:@"Content-Type"];
   
-  NSURLSessionDataTask *uploadTask = [self.urlSession dataTaskWithRequest:request];
+  if (_authorization) {
+    [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
+  }
+  
+  NSURLSessionDataTask *uploadTask = [self.urlSession dataTaskWithRequest:_urlRequest];
   _activeTask = uploadTask;
   self.showNetworkActivityIndicator = YES;
   [uploadTask resume];

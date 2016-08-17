@@ -58,11 +58,12 @@ ASJNetworking *postRequest = [[ASJNetworking alloc] initWithBaseUrl:@"http://exa
 # Credits
 
 - [AFNetworking](https://github.com/AFNetworking/AFNetworking) and its contributors.
-- [Abhijit Kayande](https://github.com/Abhijit-Kayande) for *Ctrl+Cmd+Spc*.
-- [Send POST request using NSURLSession](http://stackoverflow.com/a/19101084).
+- [Abhijit Kayande](https://github.com/Abhijit-Kayande) for *Ctrl+Cmd+Spc*
+- [Send POST request using NSURLSession](http://stackoverflow.com/a/19101084)
 - [Is there any way to attach a NSDictionary of parameters to an NSURLRequest instead of manually making a string?](http://stackoverflow.com/a/32638248)
 - [POST (HTTP): Wikipedia](https://en.wikipedia.org/wiki/POST_(HTTP))
 - [RFC 7578: Returning Values from Forms: multipart/form-data](https://www.rfc-editor.org/rfc/rfc7578.txt)
+- [SVHTTPRequest](https://github.com/TransitApp/SVHTTPRequest) for authenticating request
 
 # License
 

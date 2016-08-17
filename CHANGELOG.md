@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.1](https://github.com/sudeepjaiswal/ASJNetworking/releases/tag/1.1)
+Released on Wednesday, 17 Aug, 2016.
+
+#### Added
+* Added method to authenticate the request with username and password.
+
 ## [1.0](https://github.com/sudeepjaiswal/ASJNetworking/releases/tag/1.0)
 Released on Saturday, 13 Aug, 2016.
 

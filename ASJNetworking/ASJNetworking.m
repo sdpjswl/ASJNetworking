@@ -350,7 +350,7 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
     [temp appendFormat:@"%@=%@&", key, obj];
   }];
   
-  NSString *string = [temp stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  NSString *string = [temp stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
   return [string dataUsingEncoding:NSUTF8StringEncoding];
 }
 

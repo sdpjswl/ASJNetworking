@@ -90,7 +90,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
   ASJNetworking *networking = [[ASJNetworking alloc] initWithBaseUrl:kBaseURL2];
   [networking POST:nil parameters:p imageItems:@[imageItem] progress:^(CGFloat progressPc)
    {
-     progressLabel.text = [NSString stringWithFormat:@"Progress: %.2f%%", progressPc];
+      self->progressLabel.text = [NSString stringWithFormat:@"Progress: %.2f%%", progressPc];
      
    } completion:^(id response, NSString *responseString, NSError *error)
    {
@@ -136,8 +136,8 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
 - (void)clearLabelAndTextView
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    textView.text = @" ";
-    progressLabel.text = @" ";
+    self->textView.text = @" ";
+      self->progressLabel.text = @" ";
   }];
 }
 
@@ -148,7 +148,7 @@ static NSString *const kBaseURL2 = @"http://99.111.104.82:8080/api/photo";
     message = @"No response";
   }
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    textView.text = message;
+      self->textView.text = message;
   }];
 }
 

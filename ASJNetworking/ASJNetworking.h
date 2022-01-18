@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^CompletionBlock)(id response, NSString *responseString, NSError *error);
 typedef void (^ProgressBlock)(CGFloat progressPc);
-typedef void (^RequestBlock)();
+typedef void (^RequestBlock)(void);
 
 @interface ASJNetworking : NSObject
 

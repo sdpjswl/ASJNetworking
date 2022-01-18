@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.2](https://github.com/sudeepjaiswal/ASJNetworking/releases/tag/1.2)
+Released on Tuesday, 18 Jan, 2022.
+
+#### Added
+* Updated podspec.
+
 ## [1.1](https://github.com/sudeepjaiswal/ASJNetworking/releases/tag/1.1)
 Released on Wednesday, 17 Aug, 2016.
 

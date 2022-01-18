@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name          = 'ASJNetworking'
   s.version       = '1.2'
-  s.platform      = :ios, '7.0'
+  s.platform      = :ios, '9.0'
   s.license       = { :type => 'MIT' }
   s.homepage      = 'https://github.com/sdpjswl/ASJNetworking'
   s.authors       = { 'Sudeep' => 'sdpjswl1@gmail.com' }

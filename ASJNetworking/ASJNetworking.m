@@ -64,271 +64,271 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 
 - (instancetype)initWithBaseUrl:(NSString *)baseUrl
 {
-  NSAssert(baseUrl.length, @"You must specify a base url.");
-  self = [super init];
-  if (self) {
-    _baseUrl = baseUrl;
-    _timeoutInterval = 30.0f;
-    _responseData = [[NSMutableData alloc] init];
-  }
-  return self;
+    NSAssert(baseUrl.length, @"You must specify a base url.");
+    self = [super init];
+    if (self) {
+        _baseUrl = baseUrl;
+        _timeoutInterval = 30.0f;
+        _responseData = [[NSMutableData alloc] init];
+    }
+    return self;
 }
 
 // Thanks: SVHTTPRequest
 - (void)setUsername:(NSString *)username password:(NSString *)password
 {
-  NSString *auth = [NSString stringWithFormat:@"%@:%@", username, password];
-  NSData *data = [auth dataUsingEncoding:NSASCIIStringEncoding];
-  _authorization = [NSString stringWithFormat:@"Basic %@", [data base64EncodedStringWithOptions:0]];
+    NSString *auth = [NSString stringWithFormat:@"%@:%@", username, password];
+    NSData *data = [auth dataUsingEncoding:NSASCIIStringEncoding];
+    _authorization = [NSString stringWithFormat:@"Basic %@", [data base64EncodedStringWithOptions:0]];
 }
 
 #pragma mark - GET
 
 - (void)GET:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
-  _methodName = methodName;
-  _parameters = parameters;
-  _callback = completion;
-  
-  _urlRequest = [[NSMutableURLRequest alloc] initWithURL:self.formEncodedURL];
-  _urlRequest.HTTPMethod = @"GET";
-  
-  if (_authorization) {
-    [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
-  }
-  
-  NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:_urlRequest];
-  _activeTask = task;
-  self.showNetworkActivityIndicator = YES;
-  [task resume];
+    _methodName = methodName;
+    _parameters = parameters;
+    _callback = completion;
+    
+    _urlRequest = [[NSMutableURLRequest alloc] initWithURL:self.formEncodedURL];
+    _urlRequest.HTTPMethod = @"GET";
+    
+    if (_authorization) {
+        [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
+    }
+    
+    NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:_urlRequest];
+    _activeTask = task;
+    self.showNetworkActivityIndicator = YES;
+    [task resume];
 }
 
 #pragma mark - HEAD
 
 - (void)HEAD:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
-  _methodName = methodName;
-  _parameters = parameters;
-  _callback = completion;
-  
-  _urlRequest = [[NSMutableURLRequest alloc] initWithURL:self.formEncodedURL];
-  _urlRequest.HTTPMethod = @"HEAD";
-  
-  if (_authorization) {
-    [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
-  }
-  
-  NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:_urlRequest];
-  _activeTask = task;
-  self.showNetworkActivityIndicator = YES;
-  [task resume];
+    _methodName = methodName;
+    _parameters = parameters;
+    _callback = completion;
+    
+    _urlRequest = [[NSMutableURLRequest alloc] initWithURL:self.formEncodedURL];
+    _urlRequest.HTTPMethod = @"HEAD";
+    
+    if (_authorization) {
+        [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
+    }
+    
+    NSURLSessionDataTask *task = [self.urlSession dataTaskWithRequest:_urlRequest];
+    _activeTask = task;
+    self.showNetworkActivityIndicator = YES;
+    [task resume];
 }
 
 #pragma mark - POST
 
 - (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
-  _methodName = methodName;
-  _parameters = parameters;
-  _callback = completion;
-  [self runRequestWithHTTPMethod:@"POST"];
+    _methodName = methodName;
+    _parameters = parameters;
+    _callback = completion;
+    [self runRequestWithHTTPMethod:@"POST"];
 }
 
 - (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems completion:(nullable CompletionBlock)completion
 {
-  [self POST:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
+    [self POST:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
 }
 
 - (void)POST:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems progress:(nullable ProgressBlock)progress completion:(nullable CompletionBlock)completion
 {
-  _methodName = methodName;
-  _parameters = parameters;
-  _imageItems = imageItems;
-  _progress = progress;
-  _callback = completion;
-  [self runMultipartRequestWithHTTPMethod:@"POST"];
+    _methodName = methodName;
+    _parameters = parameters;
+    _imageItems = imageItems;
+    _progress = progress;
+    _callback = completion;
+    [self runMultipartRequestWithHTTPMethod:@"POST"];
 }
 
 #pragma mark - PUT
 
 - (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
-  _methodName = methodName;
-  _parameters = parameters;
-  _callback = completion;
-  [self runRequestWithHTTPMethod:@"PUT"];
+    _methodName = methodName;
+    _parameters = parameters;
+    _callback = completion;
+    [self runRequestWithHTTPMethod:@"PUT"];
 }
 
 - (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems completion:(nullable CompletionBlock)completion
 {
-  [self PUT:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
+    [self PUT:methodName parameters:parameters imageItems:imageItems progress:nil completion:completion];
 }
 
 - (void)PUT:(NSString *)methodName parameters:(NSDictionary *)parameters imageItems:(nullable NSArray<ASJImageItem *> *)imageItems progress:(nullable ProgressBlock)progress completion:(nullable CompletionBlock)completion
 {
-  _methodName = methodName;
-  _parameters = parameters;
-  _imageItems = imageItems;
-  _progress = progress;
-  _callback = completion;
-  [self runMultipartRequestWithHTTPMethod:@"PUT"];
+    _methodName = methodName;
+    _parameters = parameters;
+    _imageItems = imageItems;
+    _progress = progress;
+    _callback = completion;
+    [self runMultipartRequestWithHTTPMethod:@"PUT"];
 }
 
 #pragma mark - PATCH
 
 - (void)PATCH:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
-  _methodName = methodName;
-  _parameters = parameters;
-  _callback = completion;
-  [self runRequestWithHTTPMethod:@"PATCH"];
+    _methodName = methodName;
+    _parameters = parameters;
+    _callback = completion;
+    [self runRequestWithHTTPMethod:@"PATCH"];
 }
 
 #pragma mark - DELETE
 
 - (void)DELETE:(NSString *)methodName parameters:(NSDictionary *)parameters completion:(CompletionBlock)completion
 {
-  _methodName = methodName;
-  _parameters = parameters;
-  _callback = completion;
-  [self runRequestWithHTTPMethod:@"DELETE"];
+    _methodName = methodName;
+    _parameters = parameters;
+    _callback = completion;
+    [self runRequestWithHTTPMethod:@"DELETE"];
 }
 
 #pragma mark - Run request
 
 - (void)runRequestWithHTTPMethod:(NSString *)httpMethod
 {
-  _urlRequest = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
-  _urlRequest.HTTPMethod = httpMethod;
-  _urlRequest.HTTPBody = self.postHTTPBody;
-  [_urlRequest addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-  
-  if (_authorization) {
-    [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
-  }
-  
-  NSURLSessionDataTask *postDataTask = [self.urlSession dataTaskWithRequest:_urlRequest];
-  _activeTask = postDataTask;
-  self.showNetworkActivityIndicator = YES;
-  [postDataTask resume];
+    _urlRequest = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
+    _urlRequest.HTTPMethod = httpMethod;
+    _urlRequest.HTTPBody = self.postHTTPBody;
+    [_urlRequest addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    
+    if (_authorization) {
+        [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
+    }
+    
+    NSURLSessionDataTask *postDataTask = [self.urlSession dataTaskWithRequest:_urlRequest];
+    _activeTask = postDataTask;
+    self.showNetworkActivityIndicator = YES;
+    [postDataTask resume];
 }
 
 - (void)runMultipartRequestWithHTTPMethod:(NSString *)httpMethod
 {
-  _urlRequest = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
-  _urlRequest.HTTPMethod = httpMethod;
-  _urlRequest.HTTPBody = self.multipartHTTPBody;
-  [_urlRequest addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-  [_urlRequest addValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.boundary] forHTTPHeaderField:@"Content-Type"];
-  
-  if (_authorization) {
-    [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
-  }
-  
-  NSURLSessionDataTask *uploadTask = [self.urlSession dataTaskWithRequest:_urlRequest];
-  _activeTask = uploadTask;
-  self.showNetworkActivityIndicator = YES;
-  [uploadTask resume];
+    _urlRequest = [NSMutableURLRequest requestWithURL:self.requestUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:_timeoutInterval];
+    _urlRequest.HTTPMethod = httpMethod;
+    _urlRequest.HTTPBody = self.multipartHTTPBody;
+    [_urlRequest addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [_urlRequest addValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.boundary] forHTTPHeaderField:@"Content-Type"];
+    
+    if (_authorization) {
+        [_urlRequest addValue:_authorization forHTTPHeaderField:@"Authorization"];
+    }
+    
+    NSURLSessionDataTask *uploadTask = [self.urlSession dataTaskWithRequest:_urlRequest];
+    _activeTask = uploadTask;
+    self.showNetworkActivityIndicator = YES;
+    [uploadTask resume];
 }
 
 #pragma mark - NSURLSessionDataDelegate
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
-  [_responseData appendData:data];
+    [_responseData appendData:data];
 }
 
 #pragma mark - NSURLSessionTaskDelegate
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didSendBodyData:(int64_t)bytesSent totalBytesSent:(int64_t)totalBytesSent totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 {
-  NSNumber *sent = [NSNumber numberWithLongLong:totalBytesSent];
-  NSNumber *total = [NSNumber numberWithLongLong:totalBytesExpectedToSend];
-  CGFloat percentage = (sent.longLongValue * 100) / total.doubleValue;
-  if (_progress) {
-    _progress(percentage);
-  }
+    NSNumber *sent = [NSNumber numberWithLongLong:totalBytesSent];
+    NSNumber *total = [NSNumber numberWithLongLong:totalBytesExpectedToSend];
+    CGFloat percentage = (sent.longLongValue * 100) / total.doubleValue;
+    if (_progress) {
+        _progress(percentage);
+    }
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
-  _responseError = error;
-  [self validateTask];
-  [self parseUrlResponseForTask];
+    _responseError = error;
+    [self validateTask];
+    [self parseUrlResponseForTask];
 }
 
 #pragma mark - Error checking
 
 - (void)validateTask
 {
-  NSInteger httpStatusCode = (long)[(NSHTTPURLResponse *)_activeTask.response statusCode];
-  BOOL success = (httpStatusCode >= 200 && httpStatusCode < 300) ? YES : NO;
-  
-  // codes 200-299 signify successful request
-  if (success) {
-    return;
-  }
-  
-  NSInteger errorCode = _responseError.code;
-  NSError *error = nil;
-  
-  // sometimes error is nil and http status code is present
-  if (errorCode == 0 && !success)
-  {
-    NSString *errorMessage = [NSString stringWithFormat:@"Request failed: %@", [NSHTTPURLResponse localizedStringForStatusCode:httpStatusCode]];
-    NSDictionary *userInfo = @{NSLocalizedDescriptionKey: errorMessage};
-    error = [NSError errorWithDomain:kErrorDomain code:httpStatusCode userInfo:userInfo];
-  }
-  else
-  {
-    error = [NSError errorWithDomain:kErrorDomain code:errorCode userInfo:_responseError.userInfo];
-  }
-  
-  _responseError = error;
+    NSInteger httpStatusCode = (long)[(NSHTTPURLResponse *)_activeTask.response statusCode];
+    BOOL success = (httpStatusCode >= 200 && httpStatusCode < 300) ? YES : NO;
+    
+    // codes 200-299 signify successful request
+    if (success) {
+        return;
+    }
+    
+    NSInteger errorCode = _responseError.code;
+    NSError *error = nil;
+    
+    // sometimes error is nil and http status code is present
+    if (errorCode == 0 && !success)
+    {
+        NSString *errorMessage = [NSString stringWithFormat:@"Request failed: %@", [NSHTTPURLResponse localizedStringForStatusCode:httpStatusCode]];
+        NSDictionary *userInfo = @{NSLocalizedDescriptionKey: errorMessage};
+        error = [NSError errorWithDomain:kErrorDomain code:httpStatusCode userInfo:userInfo];
+    }
+    else
+    {
+        error = [NSError errorWithDomain:kErrorDomain code:errorCode userInfo:_responseError.userInfo];
+    }
+    
+    _responseError = error;
 }
 
 #pragma mark - Parsing
 
 - (void)parseUrlResponseForTask
 {
-  if (!_callback) {
-    self.showNetworkActivityIndicator = NO;
-    return;
-  }
-  
-  // fix duplication of data
-  NSData *data = [NSData dataWithData:_responseData];
-  _responseData = [[NSMutableData alloc] init];
-  
-  // might be HEAD
-  if (!data.length)
-  {
-    BOOL isHEADRequest = [_activeTask.originalRequest.HTTPMethod isEqualToString:@"HEAD"];
-    if (isHEADRequest)
-    {
-      data = [self headerDataForHEADRequestTask:_activeTask];
+    if (!_callback) {
+        self.showNetworkActivityIndicator = NO;
+        return;
     }
-  }
-  
-  NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-  if (!data) {
-    _callback(data, responseString, _responseError);
-    self.showNetworkActivityIndicator = NO;
-    return;
-  }
-  
-  NSError *parseError = nil;
-  id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-  if (_callback) {
-    _callback(json, responseString, _responseError);
-    self.showNetworkActivityIndicator = NO;
-  }
+    
+    // fix duplication of data
+    NSData *data = [NSData dataWithData:_responseData];
+    _responseData = [[NSMutableData alloc] init];
+    
+    // might be HEAD
+    if (!data.length)
+    {
+        BOOL isHEADRequest = [_activeTask.originalRequest.HTTPMethod isEqualToString:@"HEAD"];
+        if (isHEADRequest)
+        {
+            data = [self headerDataForHEADRequestTask:_activeTask];
+        }
+    }
+    
+    NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if (!data) {
+        _callback(data, responseString, _responseError);
+        self.showNetworkActivityIndicator = NO;
+        return;
+    }
+    
+    NSError *parseError = nil;
+    id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+    if (_callback) {
+        _callback(json, responseString, _responseError);
+        self.showNetworkActivityIndicator = NO;
+    }
 }
 
 - (NSData *)headerDataForHEADRequestTask:(NSURLSessionTask *)task
 {
-  NSDictionary *headers = [(NSHTTPURLResponse *)task.response allHeaderFields];
-  return [NSJSONSerialization dataWithJSONObject:headers options:NSJSONWritingPrettyPrinted error:nil];
+    NSDictionary *headers = [(NSHTTPURLResponse *)task.response allHeaderFields];
+    return [NSJSONSerialization dataWithJSONObject:headers options:NSJSONWritingPrettyPrinted error:nil];
 }
 
 #pragma mark - NSURLSessionDelegate
@@ -336,139 +336,139 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
-  // using a self signed SSL certificate casues requests to fail
-  completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
+    // using a self signed SSL certificate casues requests to fail
+    completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
 }
 
 #pragma mark - HTTP body
 
 - (NSData *)postHTTPBody
 {
-  NSMutableString *temp = [[NSMutableString alloc] init];
-  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop)
-  {
-    [temp appendFormat:@"%@=%@&", key, obj];
-  }];
-  
-  NSString *string = [temp stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
-  return [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSMutableString *temp = [[NSMutableString alloc] init];
+    [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop)
+     {
+        [temp appendFormat:@"%@=%@&", key, obj];
+    }];
+    
+    NSString *string = [temp stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+    return [string dataUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (NSData *)multipartHTTPBody
 {
-  NSMutableData *body = [[NSMutableData alloc] init];
-  
-  // attach parameters
-  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop)
-   {
-     [body appendData:[[NSString stringWithFormat:@"--%@\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-     [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
-     [body appendData:[[NSString stringWithFormat:@"%@\r\n", obj] dataUsingEncoding:NSUTF8StringEncoding]];
-   }];
-  
-  // attach images
-  for (id imageItem in _imageItems)
-  {
-    BOOL success = [imageItem isMemberOfClass:[ASJImageItem class]];
-    if (!success) {
-      NSAssert(success, @"Items must be of kind ASJImageItem");
+    NSMutableData *body = [[NSMutableData alloc] init];
+    
+    // attach parameters
+    [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *obj, BOOL *stop)
+     {
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:[[NSString stringWithFormat:@"%@\r\n", obj] dataUsingEncoding:NSUTF8StringEncoding]];
+    }];
+    
+    // attach images
+    for (id imageItem in _imageItems)
+    {
+        BOOL success = [imageItem isMemberOfClass:[ASJImageItem class]];
+        if (!success) {
+            NSAssert(success, @"Items must be of kind ASJImageItem");
+        }
+        
+        ASJImageItem *imageItemObject = (ASJImageItem *)imageItem;
+        BOOL nilCheck = (imageItemObject.name.length && imageItemObject.filename.length && imageItemObject.image);
+        if (!nilCheck) {
+            NSAssert(nilCheck, @"ASJImageItem properties name, filename and image must not be nil");
+        }
+        
+        NSData *imageData = UIImageJPEGRepresentation(imageItemObject.image, 0.6);
+        if (imageData.length) {
+            [body appendData:[[NSString stringWithFormat:@"--%@\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", imageItemObject.name, imageItemObject.filename] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:imageData];
+            [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        }
     }
     
-    ASJImageItem *imageItemObject = (ASJImageItem *)imageItem;
-    BOOL nilCheck = (imageItemObject.name.length && imageItemObject.filename.length && imageItemObject.image);
-    if (!nilCheck) {
-      NSAssert(nilCheck, @"ASJImageItem properties name, filename and image must not be nil");
-    }
-    
-    NSData *imageData = UIImageJPEGRepresentation(imageItemObject.image, 0.6);
-    if (imageData.length) {
-      [body appendData:[[NSString stringWithFormat:@"--%@\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-      [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", imageItemObject.name, imageItemObject.filename] dataUsingEncoding:NSUTF8StringEncoding]];
-      [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-      [body appendData:imageData];
-      [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-    }
-  }
-  
-  [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-  return [NSData dataWithData:body];
+    [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    return [NSData dataWithData:body];
 }
 
 - (NSString *)boundary
 {
-  return @"--------5A4n88-i269s-h15a--------";
+    return @"--------5A4n88-i269s-h15a--------";
 }
 
 #pragma mark - Request url
 
 - (NSURL *)formEncodedURL
 {
-  NSURL *requestUrl = self.requestUrl;
-  if (!_parameters) {
-    return requestUrl;
-  }
-  
-  NSMutableArray *queryItems = NSMutableArray.new;
-  [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *name, NSString *value, BOOL *stop)
-   {
-     NSURLQueryItem *item = [NSURLQueryItem queryItemWithName:name value:[value stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLQueryAllowedCharacterSet]];
-     [queryItems addObject:item];
-   }];
-  
-  NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:requestUrl resolvingAgainstBaseURL:NO];
-  urlComponents.queryItems = queryItems;
-  return urlComponents.URL;
+    NSURL *requestUrl = self.requestUrl;
+    if (!_parameters) {
+        return requestUrl;
+    }
+    
+    NSMutableArray *queryItems = NSMutableArray.new;
+    [_parameters enumerateKeysAndObjectsUsingBlock:^(NSString *name, NSString *value, BOOL *stop)
+     {
+        NSURLQueryItem *item = [NSURLQueryItem queryItemWithName:name value:[value stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLQueryAllowedCharacterSet]];
+        [queryItems addObject:item];
+    }];
+    
+    NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:requestUrl resolvingAgainstBaseURL:NO];
+    urlComponents.queryItems = queryItems;
+    return urlComponents.URL;
 }
 
 - (NSURL *)requestUrl
 {
-  // append slash at the end if not present
-  NSString *lastCharacter = [_baseUrl substringFromIndex:_baseUrl.length - 1];
-  BOOL isTerminatedBySlash = [lastCharacter isEqualToString:@"/"] ? YES : NO;
-  if (!isTerminatedBySlash)
-  {
-    _baseUrl = [_baseUrl stringByAppendingString:@"/"];
-  }
-  
-  NSURL *baseUrl = [NSURL URLWithString:_baseUrl];
-  if (!_methodName) {
-    return baseUrl;
-  }
-  return [NSURL URLWithString:_methodName relativeToURL:baseUrl];
+    // append slash at the end if not present
+    NSString *lastCharacter = [_baseUrl substringFromIndex:_baseUrl.length - 1];
+    BOOL isTerminatedBySlash = [lastCharacter isEqualToString:@"/"] ? YES : NO;
+    if (!isTerminatedBySlash)
+    {
+        _baseUrl = [_baseUrl stringByAppendingString:@"/"];
+    }
+    
+    NSURL *baseUrl = [NSURL URLWithString:_baseUrl];
+    if (!_methodName) {
+        return baseUrl;
+    }
+    return [NSURL URLWithString:_methodName relativeToURL:baseUrl];
 }
 
 #pragma mark - Url session
 
 - (NSURLSession *)urlSession {
-  static NSURLSession *session = nil;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    session = [NSURLSession sessionWithConfiguration:configuration
-                                            delegate:self
-                                       delegateQueue:[NSOperationQueue mainQueue]];
-  });
-  return session;
+    static NSURLSession *session = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        session = [NSURLSession sessionWithConfiguration:configuration
+                                                delegate:self
+                                           delegateQueue:[NSOperationQueue mainQueue]];
+    });
+    return session;
 }
 
 #pragma mark - Network activity indicator
 
 - (void)setShowNetworkActivityIndicator:(BOOL)showNetworkActivityIndicator
 {
-  BOOL isVisible = [UIApplication sharedApplication].isNetworkActivityIndicatorVisible;
-  if (showNetworkActivityIndicator && isVisible) {
-    return;
-  }
-  [UIApplication sharedApplication].networkActivityIndicatorVisible = showNetworkActivityIndicator;
+    BOOL isVisible = [UIApplication sharedApplication].isNetworkActivityIndicatorVisible;
+    if (showNetworkActivityIndicator && isVisible) {
+        return;
+    }
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = showNetworkActivityIndicator;
 }
 
 #pragma mark - Cancel
 
 - (void)cancelActiveRequest
 {
-  if (_activeTask) {
-    [_activeTask cancel];
-  }
+    if (_activeTask) {
+        [_activeTask cancel];
+    }
 }
 
 @end
@@ -479,11 +479,11 @@ static NSString *const kErrorDomain = @"com.asjnetworking.errordomain";
 
 + (ASJImageItem *)imageItemWithName:(NSString *)name fileName:(NSString *)filename image:(UIImage *)image
 {
-  ASJImageItem *item = [[ASJImageItem alloc] init];
-  item.name = name;
-  item.filename = filename;
-  item.image = image;
-  return item;
+    ASJImageItem *item = [[ASJImageItem alloc] init];
+    item.name = name;
+    item.filename = filename;
+    item.image = image;
+    return item;
 }
 
 @end

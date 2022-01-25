@@ -48,9 +48,9 @@
 				C087794F1B485908005388E4 /* ASJNetworkingExample */,
 				C087794E1B485908005388E4 /* Products */,
 			);
-			indentWidth = 2;
+			indentWidth = 4;
 			sourceTree = "<group>";
-			tabWidth = 2;
+			tabWidth = 4;
 		};
 		C087794E1B485908005388E4 /* Products */ = {
 			isa = PBXGroup;
